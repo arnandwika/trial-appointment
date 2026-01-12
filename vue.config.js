@@ -1,4 +1,7 @@
 module.exports = {
+  transpileDependencies: [
+    'vue-router'
+  ],
   devServer: {
     watchOptions: {
       ignored: [
@@ -16,3 +19,4 @@ module.exports = {
     }
   }
 }
+
