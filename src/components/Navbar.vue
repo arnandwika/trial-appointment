@@ -11,7 +11,7 @@
         <a href="/">Home</a>
         <a href="/classes">Classes</a>
         <a href="/timetable">Timetable</a>
-        <a href="/packages">Packages</a>
+        <router-link to="/packages">Packages</router-link>
       </nav>
 
       <!-- Desktop CTA -->
