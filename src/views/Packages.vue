@@ -5,7 +5,7 @@
       <!-- LEFT SECTION -->
       <div class="col-12 md:col-3">
         <h2 class="text-2xl font-semibold mb-3">
-          Morgan Pilates<br>
+          Morgen Pilates<br>
           Private Packages
         </h2>
 

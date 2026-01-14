@@ -26,7 +26,7 @@
       <div class="container about-grid">
         <img src="@/assets/about.jpg" alt="About Yoo-Na Pilates" />
         <div class="about-content">
-          <h1>About Morgan Pilates</h1>
+          <h1>About Morgen Pilates & Yoga Studio</h1>
           <p>...</p>
         </div>
       </div>

@@ -3,7 +3,7 @@
     <div class="navbar-container">
       <!-- Logo -->
       <div class="logo">
-        MORGAN PILATES
+        <img src="@/assets/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
       </div>
 
       <!-- Desktop Menu -->
