@@ -12,9 +12,12 @@ export default createStore({
   actions: {
     login({ commit }, user) {
       commit('setUser', user)
+    },
+    logout({ commit }) {
+      commit('setUser', null)
     }
   },
   getters: {
-    isAuthenticated: (state) => !!state.user
+    user: (state) => state.user
   }
 })

@@ -63,6 +63,7 @@
                   label="Buy now"
                   class="w-full"
                   rounded
+                  @click="orderPackage(item.title, item.price)"
                 />
               </template>
             </Card>
@@ -74,12 +75,19 @@
 </template>
 
 <script setup>
+import { useLoginModal } from '@/composables/useLoginModal'
+import { useAlert } from '@/composables/useAlert'
 import Navbar from '@/components/Navbar.vue'
 import { ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
 import axios from 'axios'
 
 const packages = ref([])
 const loading = ref(true)
+const store = useStore()
+
+const { openModal } = useLoginModal()
+const { confirm } = useAlert()
 
 const fetchPackages = async () => {
   try {
@@ -87,6 +95,14 @@ const fetchPackages = async () => {
     packages.value = res.data.data
   } finally {
     loading.value = false
+  }
+}
+
+const orderPackage = async (title, price) => {
+  if (!store.getters.user) {
+    openModal()
+  } else {
+    confirm('Buy Package', 'Apakah anda yakin mengajukan pembelian paket ' + title + ' seharga ' + formatPrice(price) + '?')
   }
 }
 

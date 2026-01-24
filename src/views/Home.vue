@@ -18,7 +18,7 @@
           space.
         </p>
 
-        <Button label="Book a Class" rounded />
+        <Button label="Book a Class" rounded @click="bookClass" />
       </div>
     </section>
 
@@ -51,7 +51,24 @@
 </template>
 
 <script setup>
+import { useLoginModal } from '@/composables/useLoginModal'
 import Navbar from '@/components/Navbar.vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const store = useStore()
+
+const { openModal } = useLoginModal()
+
+const bookClass = () => {
+  if (!store.getters.user) {
+    openModal()
+  } else {
+    router.push('/timetable')
+  }
+}
 </script>
 
 <style lang="scss" scoped>

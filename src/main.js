@@ -12,6 +12,7 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import ToastService from 'primevue/toastservice'
+import Tag from 'primevue/tag'
 
 import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -30,6 +31,7 @@ app.component('Skeleton', Skeleton)
 app.component('Dialog', Dialog)
 app.component('InputText', InputText)
 app.component('Password', Password)
+app.component('Tag', Tag)
 
 app.use(router)
 app.use(store)

@@ -8,23 +8,24 @@
 
       <!-- Desktop Menu -->
       <nav class="nav-links desktop">
-        <a href="/">Home</a>
-        <a href="/classes">Classes</a>
-        <a href="/timetable">Timetable</a>
+        <router-link to="/">Home</router-link>
+        <router-link to="/classes">Classes</router-link>
+        <router-link to="/timetable">Timetable</router-link>
         <router-link to="/packages">Packages</router-link>
       </nav>
 
       <!-- Desktop CTA -->
       <Button
         v-if="!userLogin"
+        :loading="loading"
         label="Login / Sign Up"
         class="desktop"
         outlined
         rounded
-        @click="showLogin = true"
+        @click="openLogin"
       />
 
-      <p v-if="userLogin">
+      <p class="font-semibold" v-if="userLogin">
         {{ userLogin.name }}
       </p>
 
@@ -40,130 +41,58 @@
     <!-- Mobile Menu -->
     <transition name="slide">
       <div v-if="mobileOpen" class="mobile-menu">
-        <a href="/" @click="closeMenu">Home</a>
-        <a href="/classes" @click="closeMenu">Classes</a>
-        <a href="/timetable" @click="closeMenu">Timetable</a>
-        <a href="/packages" @click="closeMenu">Packages</a>
+        <router-link to="/" @click="closeMenu">Home</router-link>
+        <router-link to="/classes" @click="closeMenu">Classes</router-link>
+        <router-link to="/timetable" @click="closeMenu">Timetable</router-link>
+        <router-link to="/packages" @click="closeMenu">Packages</router-link>
 
         <Button
           v-if="!userLogin"
+          :loading="loading"
           label="Login / Sign Up"
           outlined
           rounded
-          @click="showLogin = true"
+          @click="openLogin"
         />
       </div>
     </transition>
-    <Dialog
-      v-model:visible="showLogin"
-      modal
-      dismissableMask
-      :showHeader="false"
-      :style="{ width: '70vw', maxWidth: '900px' }"
-      :breakpoints="{ '960px': '90vw', '640px': '100vw' }"
-      contentClass="p-0 overflow-hidden"
-    >
-      <div class="flex h-full">
-
-        <!-- LEFT IMAGE / BRAND (hidden on mobile) -->
-        <div
-          class="hidden md:flex w-6 background-color-primary align-items-center justify-content-center"
-        >
-          <img
-            src="@/assets/logo.png"
-            alt="Brand"
-            class="max-w-2rem"
-          />
-        </div>
-
-        <!-- RIGHT FORM -->
-        <div class="w-full md:w-6 p-5 flex flex-column justify-content-center">
-          <h2 class="text-center mb-4">Log in</h2>
-
-          <!-- Tabs -->
-          <!-- <div class="flex justify-content-center gap-4 mb-4">
-            <span class="font-semibold border-bottom-2 border-primary pb-2">
-              Email address
-            </span>
-          </div> -->
-
-          <!-- Email -->
-          <div class="mb-3">
-            <label class="block mb-1 font-medium">Email address</label>
-            <InputText v-model="email" class="w-full" />
-          </div>
-
-          <!-- Password -->
-          <div class="mb-3">
-            <label class="block mb-1 font-medium">Password</label>
-            <Password
-              v-model="password"
-              toggleMask
-              :feedback="false"
-              class="w-full"
-            />
-          </div>
-
-          <!-- Reset -->
-          <!-- <div class="text-sm mb-4">
-            Forgot password or don’t have one?
-            <a class="text-primary cursor-pointer">Reset Password</a>
-          </div> -->
-
-          <!-- Login Button -->
-          <Button
-            :loading="loading"
-            label="Login"
-            class="w-full my-4"
-            :disabled="!email || !password"
-            @click="login()"
-          />
-
-          <!-- Sign up -->
-          <div class="text-center text-sm">
-            <p v-if="errorMessage" class="text-color-red mt-2">
-              {{ errorMessage }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </Dialog>
   </header>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { useLoginModal } from '@/composables/useLoginModal'
+import { onMounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { useAlert } from '@/composables/useAlert'
 import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
 const store = useStore()
-const { error } = useAlert()
+const { openModal } = useLoginModal()
 
 const mobileOpen = ref(false)
-const showLogin = ref(false)
-const userLogin = ref(null)
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const errorMessage = ref('')
+const userLogin = computed(() => store.getters.user)
+const showExpiredToken = ref(true)
+const loading = ref(true)
 
 onMounted(async() => {
-  if (!store.getters.user) {
-    try {
-      const res = await axios.get(
-        process.env.VUE_APP_APPOINTMENT_API + 'user',
-        {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.token
-          }
-        },
-      )
+  console.log(store.getters.user)
+  console.log(userLogin)
+  try {
+    const res = await axios.get(
+      process.env.VUE_APP_APPOINTMENT_API + 'user',
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.token
+        }
+      },
+    )
 
-      userLogin.value = res.data
-    } catch (error) {
+    store.dispatch('login', res.data)
+    showExpiredToken.value = false
+    loading.value = false
+  } catch (error) {
+    if (localStorage.token) {
       toast.add({
         severity: 'error',
         summary: 'Token Habis',
@@ -171,8 +100,10 @@ onMounted(async() => {
         life: 3000
       })
     }
-  } else {
-    userLogin.value = store.getters.user
+    localStorage.removeItem('token')
+    store.dispatch('logout')
+    showExpiredToken.value = true
+    loading.value = false
   }
 })
 
@@ -184,34 +115,8 @@ const closeMenu = () => {
   mobileOpen.value = false
 }
 
-const login = async () => {
-  loading.value = true
-
-  try {
-    const res = await axios.post(
-      process.env.VUE_APP_APPOINTMENT_API + 'auth/login',
-      {
-        email: email.value,
-        password: password.value
-      },
-    )
-
-    // success response
-    store.dispatch('login', res.data.data.user)
-    localStorage.setItem('token', res.data.data.token)
-    showLogin.value = false
-    toast.add({
-      severity: 'success',
-      summary: 'Berhasil Login',
-      detail: 'Selamat datang ' + res.data.data.user.name,
-      life: 3000
-    })
-    loading.value = false
-    userLogin.value = res.data.data.user
-  } catch (err) {
-    errorMessage.value = err.response?.data?.message || 'Login failed'
-    error('Gagal Login', errorMessage)
-  }
+const openLogin = () => {
+  openModal()
 }
 
 </script>
