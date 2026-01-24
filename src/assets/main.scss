@@ -19,8 +19,12 @@ a {
   color: $text-color-light
 }
 
+.text-color-red {
+  color: red
+}
+
 .background-color-primary {
-  color: $accent
+  background-color: $bg-primary
 }
 
 h1 {

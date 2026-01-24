@@ -83,8 +83,8 @@ const loading = ref(true)
 
 const fetchPackages = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'api/packages')
-    packages.value = res.data
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'package')
+    packages.value = res.data.data
   } finally {
     loading.value = false
   }

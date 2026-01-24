@@ -2,32 +2,48 @@
   <div class="home">
     <Navbar />
 
-    <section class="hero">
-      <div class="overlay text-color-light">
-        <h1 class="">
+    <section class="hero relative">
+      <div
+        class="overlay text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
+      >
+        <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
           Strength, Balance, and Grace<br />
           in Every Movement
         </h1>
 
-        <p>
-          Transform your body and mind with expert-led Pilates
-          sessions designed for all levels. Build core strength,
-          improve flexibility, and move with confidence in a calm
-          and supportive space.
+        <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
+          Transform your body and mind with expert-led Pilates sessions
+          designed for all levels. Build core strength, improve
+          flexibility, and move with confidence in a calm and supportive
+          space.
         </p>
 
-        <Button
-          label="Book a Class"
-          rounded
-        />
+        <Button label="Book a Class" rounded />
       </div>
     </section>
-    <section class="about">
-      <div class="container about-grid">
-        <img src="@/assets/about.jpg" alt="About Yoo-Na Pilates" />
-        <div class="about-content">
-          <h1>About Morgen Pilates & Yoga Studio</h1>
-          <p>...</p>
+
+    <!-- ABOUT SECTION -->
+    <section class="about py-6">
+      <div
+        class="container grid align-items-center gap-4 px-3 md:px-6"
+      >
+        <!-- Image -->
+        <div class="col-12 md:col-5">
+          <img
+            src="@/assets/about.jpg"
+            alt="About Morgen Pilates & Yoga Studio"
+            class="w-full border-round-lg shadow-2"
+          />
+        </div>
+
+        <!-- Text -->
+        <div class="col-12 md:col-6">
+          <h1 class="text-2xl md:text-4xl mb-3">
+            About Morgen Pilates & Yoga Studio
+          </h1>
+          <p class="text-base md:text-lg line-height-3">
+            ...
+          </p>
         </div>
       </div>
     </section>
