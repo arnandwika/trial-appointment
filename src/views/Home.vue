@@ -7,15 +7,11 @@
         class="overlay text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
       >
         <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
-          Strength, Balance, and Grace<br />
-          in Every Movement
+          Revitalize and Strenghten Your Body
         </h1>
 
         <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
-          Transform your body and mind with expert-led Pilates sessions
-          designed for all levels. Build core strength, improve
-          flexibility, and move with confidence in a calm and supportive
-          space.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
         </p>
 
         <Button label="Book a Class" rounded @click="bookClass" />
@@ -28,7 +24,7 @@
         class="container grid align-items-center gap-4 px-3 md:px-6"
       >
         <!-- Image -->
-        <div class="col-12 md:col-5">
+        <div class="col-12 md:col-6">
           <img
             src="@/assets/about.jpg"
             alt="About Morgen Pilates & Yoga Studio"
@@ -37,22 +33,44 @@
         </div>
 
         <!-- Text -->
-        <div class="col-12 md:col-6">
+        <div class="col-12 md:col-4">
           <h1 class="text-2xl md:text-4xl mb-3">
             About Morgen Pilates & Yoga Studio
           </h1>
           <p class="text-base md:text-lg line-height-3">
-            ...
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum quam incidunt, reiciendis officia recusandae consequatur molestiae eum pariatur illum, voluptates tempora dolorem reprehenderit! Quibusdam magni natus veniam sit optio unde?
           </p>
+          <Button label="View Classes" rounded @click="routing('classes')" />
         </div>
       </div>
     </section>
+
+    <section class="hero2 relative">
+      <div class="overlay2">
+        <div
+          style="opacity: 100%;"
+          class="text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
+        >
+          <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
+            See Our Beneficial Package
+          </h1>
+
+          <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
+          </p>
+
+          <Button label="View Packages" rounded @click="routing('packages')" />
+        </div>
+      </div>
+    </section>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import { useLoginModal } from '@/composables/useLoginModal'
 import Navbar from '@/components/Navbar.vue'
+import Footer from '@/components/Footer.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -69,13 +87,25 @@ const bookClass = () => {
     router.push('/timetable')
   }
 }
+
+const routing = (routeTo) => {
+  router.push(routeTo)
+}
 </script>
 
 <style lang="scss" scoped>
 
 .hero {
-  height: 100vh;
+  height: 90vh;
   background-image: url('~@/assets/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.hero2 {
+  height: 65vh;
+  background-image: url('~@/assets/hero2.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -87,6 +117,11 @@ const bookClass = () => {
   left: 6%;
   transform: translateY(-50%);
   max-width: 520px;
+}
+
+.overlay2 {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100%;
 }
 
 .hero-btn {

@@ -1,13 +1,13 @@
 <template>
   <header class="navbar">
-    <div class="navbar-container">
+    <div class="navbar-container container grid">
       <!-- Logo -->
-      <div class="logo">
-        <img src="@/assets/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
+      <div class="logo col-4 text-left">
+        <img @click="routing('/')" src="@/assets/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
       </div>
 
       <!-- Desktop Menu -->
-      <nav class="nav-links desktop">
+      <nav class="nav-links desktop col-4 flex justify-content-center flex-wrap">
         <router-link to="/">Home</router-link>
         <router-link to="/classes">Classes</router-link>
         <router-link to="/timetable">Timetable</router-link>
@@ -15,15 +15,16 @@
       </nav>
 
       <!-- Desktop CTA -->
-      <Button
-        v-if="!userLogin"
-        :loading="loading"
-        label="Login / Sign Up"
-        class="desktop"
-        outlined
-        rounded
-        @click="openLogin"
-      />
+      <div class="desktop px-5 col-4 flex justify-content-end flex-wrap">
+          <Button
+          v-if="!userLogin"
+          :loading="loading"
+          label="Login"
+          outlined
+          rounded
+          @click="openLogin"
+        />
+      </div>
 
       <p class="font-semibold" v-if="userLogin">
         {{ userLogin.name }}
@@ -49,7 +50,8 @@
         <Button
           v-if="!userLogin"
           :loading="loading"
-          label="Login / Sign Up"
+          label="Login"
+          class="px-5"
           outlined
           rounded
           @click="openLogin"
@@ -65,6 +67,9 @@ import { onMounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const toast = useToast()
 const store = useStore()
@@ -119,6 +124,10 @@ const openLogin = () => {
   openModal()
 }
 
+const routing = (routeTo) => {
+  router.push(routeTo)
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -134,7 +143,6 @@ const openLogin = () => {
 .navbar-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 1rem 1.5rem;
 }
 
