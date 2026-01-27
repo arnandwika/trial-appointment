@@ -1,7 +1,7 @@
 <template>
-  <div class="packages">
+  <div class="packages min-h-screen flex flex-column">
     <Navbar />
-    <div class="grid mx-4 my-3">
+    <div class="flex-1 grid mx-4 my-3">
       <!-- LEFT SECTION -->
       <div class="col-12 md:col-3">
         <h2 class="text-2xl font-semibold mb-3">
@@ -71,6 +71,7 @@
         </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 
@@ -78,6 +79,7 @@
 import { useLoginModal } from '@/composables/useLoginModal'
 import { useAlert } from '@/composables/useAlert'
 import Navbar from '@/components/Navbar.vue'
+import Footer from '@/components/Footer.vue'
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'

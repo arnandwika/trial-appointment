@@ -1,9 +1,9 @@
 <template>
-  <header class="footer">
+  <header class="footer bottom-0">
     <div class="footer-container container grid">
-      <div class="col-4 text-left">© 2026 Morgen Pilates & Yoga Studio. All rights reserved.</div>
+      <div class="col-4 text-left md:text-sm text-xs">© 2026 Morgen Pilates & Yoga Studio. All rights reserved.</div>
       <div class="col-4 text-center">
-        <img src="@/assets/logo.png" class="w-1rem h-auto" alt="Morgen Pilates" />
+        <img src="@/assets/identity_logo/logo.png" class="w-1rem h-auto" alt="Morgen Pilates" />
       </div>
       <div class="col-4 text-right">
         <i class="pi pi-instagram cursor-pointer"></i>

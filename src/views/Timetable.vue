@@ -1,7 +1,7 @@
 <template>
-  <div class="timetable">
+  <div class="timetable min-h-screen flex flex-column">
     <Navbar />
-    <div class="p-3">
+    <div class="p-3 flex-1">
 
       <!-- HEADER -->
       <h2 class="mb-3">Timetable</h2>
@@ -37,7 +37,7 @@
 
 
       <!-- FILTERS -->
-      <div class="grid mb-4">
+      <!-- <div class="grid mb-4">
         <div class="col-12 md:col-2" v-for="filter in filters" :key="filter.label">
           <Dropdown
             v-model="filter.value"
@@ -48,7 +48,7 @@
             class="w-full"
           />
         </div>
-      </div>
+      </div> -->
 
       <!-- DAY TITLE -->
       <div class="flex justify-content-between align-items-center mb-2">
@@ -63,12 +63,11 @@
         </div>
       </div>
 
-      <!-- CLASS LIST -->
       <div class="flex flex-column gap-3">
         <Card
-          v-for="item in classes"
+          v-for="item in schedules"
           :key="item.id"
-          class="class-card"
+          class="schedule-card"
         >
           <template #content>
             <div class="grid align-items-center">
@@ -95,11 +94,13 @@
       </div>
 
     </div>
+    <Footer />
   </div>
 </template>
 
 <script setup>
 import Navbar from '@/components/Navbar.vue'
+import Footer from '@/components/Footer.vue'
 import { ref, onMounted } from 'vue'
 import dayjs from 'dayjs'
 dayjs.locale('id')
@@ -134,46 +135,46 @@ const setActiveDate = (selected) => {
   // later: fetch timetable(selected.iso)
 }
 
-const filters = ref([
-  {
-    label: 'All categories',
-    value: null,
-    options: [
-      { label: 'All', value: null },
-      { label: 'Barrel', value: 'barrel' },
-    ],
-  },
-  {
-    label: 'Location',
-    value: null,
-    options: [
-      { label: 'Sunter', value: 'sunter' },
-    ],
-  },
-  {
-    label: 'Classes',
-    value: null,
-    options: [
-      { label: 'Group Class', value: 'group' },
-    ],
-  },
-  {
-    label: 'Instructor',
-    value: null,
-    options: [
-      { label: 'Medina Ms', value: 'medina' },
-    ],
-  },
-  {
-    label: 'Level of difficulty',
-    value: null,
-    options: [
-      { label: 'Beginner', value: 'beginner' },
-    ],
-  },
-])
+// const filters = ref([
+//   {
+//     label: 'All categories',
+//     value: null,
+//     options: [
+//       { label: 'All', value: null },
+//       { label: 'Barrel', value: 'barrel' },
+//     ],
+//   },
+//   {
+//     label: 'Location',
+//     value: null,
+//     options: [
+//       { label: 'Sunter', value: 'sunter' },
+//     ],
+//   },
+//   {
+//     label: 'Classes',
+//     value: null,
+//     options: [
+//       { label: 'Group Class', value: 'group' },
+//     ],
+//   },
+//   {
+//     label: 'Instructor',
+//     value: null,
+//     options: [
+//       { label: 'Medina Ms', value: 'medina' },
+//     ],
+//   },
+//   {
+//     label: 'Level of difficulty',
+//     value: null,
+//     options: [
+//       { label: 'Beginner', value: 'beginner' },
+//     ],
+//   },
+// ])
 
-const classes = ref([
+const schedules = ref([
   {
     id: 1,
     time: '7:00am',
@@ -214,7 +215,7 @@ onMounted(generateDates)
   color: white;
 }
 
-.class-card {
+.schedule-card {
   background: #e5d8c8;
   border-radius: 12px;
 }

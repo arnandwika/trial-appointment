@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <div class="home min-h-screen flex flex-column">
     <Navbar />
 
-    <section class="hero relative">
+    <section class="fex-1 hero relative">
       <div
         class="overlay text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
       >
@@ -14,7 +14,7 @@
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
         </p>
 
-        <Button label="Book a Class" rounded @click="bookClass" />
+        <Button label="Book a Class" rounded @click="routing('timetable')" />
       </div>
     </section>
 
@@ -26,7 +26,7 @@
         <!-- Image -->
         <div class="col-12 md:col-6">
           <img
-            src="@/assets/about.jpg"
+            src="@/assets/home/about.jpg"
             alt="About Morgen Pilates & Yoga Studio"
             class="w-full border-round-lg shadow-2"
           />
@@ -40,7 +40,7 @@
           <p class="text-base md:text-lg line-height-3">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum quam incidunt, reiciendis officia recusandae consequatur molestiae eum pariatur illum, voluptates tempora dolorem reprehenderit! Quibusdam magni natus veniam sit optio unde?
           </p>
-          <Button label="View Classes" rounded @click="routing('classes')" />
+          <Button label="View Classes" rounded @click="routing('course-classes')" />
         </div>
       </div>
     </section>
@@ -68,25 +68,19 @@
 </template>
 
 <script setup>
-import { useLoginModal } from '@/composables/useLoginModal'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const store = useStore()
-
-const { openModal } = useLoginModal()
-
-const bookClass = () => {
-  if (!store.getters.user) {
-    openModal()
-  } else {
-    router.push('/timetable')
-  }
-}
+// const bookClass = () => {
+//   if (!store.getters.user) {
+//     openModal()
+//   } else {
+//     router.push('/timetable')
+//   }
+// }
 
 const routing = (routeTo) => {
   router.push(routeTo)
@@ -97,7 +91,7 @@ const routing = (routeTo) => {
 
 .hero {
   height: 90vh;
-  background-image: url('~@/assets/hero.jpg');
+  background-image: url('~@/assets/home/hero.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -105,7 +99,7 @@ const routing = (routeTo) => {
 
 .hero2 {
   height: 65vh;
-  background-image: url('~@/assets/hero2.jpg');
+  background-image: url('~@/assets/home/hero2.jpg');
   background-size: cover;
   background-position: center;
   position: relative;

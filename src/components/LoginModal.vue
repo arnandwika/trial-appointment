@@ -15,7 +15,7 @@
           class="hidden md:flex w-6 background-color-primary align-items-center justify-content-center"
         >
           <img
-            src="@/assets/half_logo.png"
+            src="@/assets/identity_logo/half_logo.png"
             alt="Brand"
             class="max-w-7rem"
           />

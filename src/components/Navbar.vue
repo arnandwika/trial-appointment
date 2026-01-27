@@ -2,20 +2,20 @@
   <header class="navbar">
     <div class="navbar-container container grid">
       <!-- Logo -->
-      <div class="logo col-4 text-left">
-        <img @click="routing('/')" src="@/assets/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
+      <div class="logo md:col-3 text-left">
+        <img @click="routing('/')" src="@/assets/identity_logo/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
       </div>
 
       <!-- Desktop Menu -->
-      <nav class="nav-links desktop col-4 flex justify-content-center flex-wrap">
+      <nav class="nav-links desktop md:col-6 md:flex justify-content-center flex-wrap">
         <router-link to="/">Home</router-link>
-        <router-link to="/classes">Classes</router-link>
+        <router-link to="/course-classes">Course Classes</router-link>
         <router-link to="/timetable">Timetable</router-link>
         <router-link to="/packages">Packages</router-link>
       </nav>
 
       <!-- Desktop CTA -->
-      <div class="desktop px-5 col-4 flex justify-content-end flex-wrap">
+      <div class="desktop px-5 md:col-3 md:flex justify-content-end flex-wrap">
           <Button
           v-if="!userLogin"
           :loading="loading"
@@ -26,14 +26,14 @@
         />
       </div>
 
-      <p class="font-semibold" v-if="userLogin">
+      <p class="font-semibold col-offset-5" v-if="userLogin">
         {{ userLogin.name }}
       </p>
 
       <!-- Mobile Hamburger -->
       <Button
         icon="pi pi-bars"
-        class="mobile menu-btn"
+        class="mobile menu-btn col-offset-5"
         text
         @click="toggleMenu"
       />
@@ -43,7 +43,7 @@
     <transition name="slide">
       <div v-if="mobileOpen" class="mobile-menu">
         <router-link to="/" @click="closeMenu">Home</router-link>
-        <router-link to="/classes" @click="closeMenu">Classes</router-link>
+        <router-link to="/course-classes" @click="closeMenu">Course Classes</router-link>
         <router-link to="/timetable" @click="closeMenu">Timetable</router-link>
         <router-link to="/packages" @click="closeMenu">Packages</router-link>
 
