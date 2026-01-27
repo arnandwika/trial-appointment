@@ -10,7 +10,7 @@
       <nav class="nav-links desktop md:col-6 md:flex justify-content-center flex-wrap">
         <router-link to="/">Home</router-link>
         <router-link to="/course-classes">Course Classes</router-link>
-        <router-link to="/timetable">Timetable</router-link>
+        <router-link to="/schedule">Schedule</router-link>
         <router-link to="/packages">Packages</router-link>
       </nav>
 
@@ -44,7 +44,7 @@
       <div v-if="mobileOpen" class="mobile-menu">
         <router-link to="/" @click="closeMenu">Home</router-link>
         <router-link to="/course-classes" @click="closeMenu">Course Classes</router-link>
-        <router-link to="/timetable" @click="closeMenu">Timetable</router-link>
+        <router-link to="/schedule" @click="closeMenu">Schedule</router-link>
         <router-link to="/packages" @click="closeMenu">Packages</router-link>
 
         <Button

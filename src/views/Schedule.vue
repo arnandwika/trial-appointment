@@ -1,10 +1,10 @@
 <template>
-  <div class="timetable min-h-screen flex flex-column">
+  <div class="schedule min-h-screen flex flex-column">
     <Navbar />
     <div class="p-3 flex-1">
 
       <!-- HEADER -->
-      <h2 class="mb-3">Timetable</h2>
+      <h2 class="mb-3">Schedule</h2>
 
       <!-- DATE SELECTOR -->
       <div class="date-wrapper mb-4">

@@ -53,20 +53,21 @@
               <img
                 :src="require(`@/assets/course_class/${item.image_url}`)"
                 alt=""
-                class="w-full h-12rem object-fit-cover border-round-top"
+                class="w-full h-11rem object-fit-cover border-round-top"
               />
             </template>
 
             <template #content>
-              <h3 class="text-lg font-semibold text-900 mb-2">
-                {{ item.name }}
-              </h3>
+              <div class="flex flex-column h-full">
+                <h3 class="text-lg font-semibold text-900 mb-2">
+                  {{ item.name }} ({{ item.class_capacity }} orang)
+                </h3>
 
-              <p class="text-600 text-sm line-height-3 mb-3">
-                {{ item.description }}
-              </p>
-
-              <Button label="Book a Class" rounded @click="routing('packages')" />
+                <p class="text-600 text-sm line-height-3 mb-3">
+                  {{ item.description }}
+                </p>
+                <Button class="mt-auto" label="Book a Class" rounded @click="routing('packages')" />
+              </div>
             </template>
           </Card>
         </div>
@@ -121,5 +122,9 @@ onMounted(async () => {
 <style scoped>
 .object-fit-cover {
   object-fit: cover;
+}
+
+.mt-auto {
+  margin-top: auto;
 }
 </style>

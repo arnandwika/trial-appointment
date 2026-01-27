@@ -14,7 +14,7 @@
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
         </p>
 
-        <Button label="Book a Class" rounded @click="routing('timetable')" />
+        <Button label="Book a Class" rounded @click="routing('schedule')" />
       </div>
     </section>
 

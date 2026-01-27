@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Packages from '@/views/Packages.vue'
 import CourseClasses from '@/views/CourseClasses.vue'
-import Timetable from '@/views/Timetable.vue'
+import Schedule from '@/views/Schedule.vue'
 
 const routes = [
   {
@@ -21,9 +21,9 @@ const routes = [
     component: CourseClasses
   },
   {
-    path: '/timetable',
-    name: 'timetable',
-    component: Timetable
+    path: '/schedule',
+    name: 'schedule',
+    component: Schedule
   },
 ]
 
