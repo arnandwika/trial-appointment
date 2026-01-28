@@ -15,7 +15,7 @@
       </nav>
 
       <!-- Desktop CTA -->
-      <div class="desktop px-5 md:col-3 md:flex justify-content-end flex-wrap">
+      <div v-if="!userLogin" class="desktop px-5 md:col-3 md:flex justify-content-end flex-wrap">
           <Button
           v-if="!userLogin"
           :loading="loading"
@@ -26,14 +26,14 @@
         />
       </div>
 
-      <p class="font-semibold col-offset-5" v-if="userLogin">
+      <p class="font-semibold col-offset-4 md:col-offset-0 md:col-3 md:flex justify-content-end flex-wrap" v-if="userLogin">
         {{ userLogin.name }}
       </p>
 
       <!-- Mobile Hamburger -->
       <Button
         icon="pi pi-bars"
-        class="mobile menu-btn col-offset-5"
+        class="mobile menu-btn"
         text
         @click="toggleMenu"
       />

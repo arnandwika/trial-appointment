@@ -13,6 +13,8 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import ToastService from 'primevue/toastservice'
 import Tag from 'primevue/tag'
+import Badge from 'primevue/badge'
+import Divider from 'primevue/divider'
 
 import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -32,6 +34,8 @@ app.component('Dialog', Dialog)
 app.component('InputText', InputText)
 app.component('Password', Password)
 app.component('Tag', Tag)
+app.component('Badge', Badge)
+app.component('Divider', Divider)
 
 app.use(router)
 app.use(store)
