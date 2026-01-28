@@ -8,11 +8,11 @@
 
       <!-- DATE SELECTOR -->
       <div class="date-wrapper mb-4">
-        <Button
+        <!-- <Button
           icon="pi pi-chevron-left"
           text
           class="nav-btn"
-        />
+        /> -->
 
         <div class="date-scroll">
           <div
@@ -28,11 +28,11 @@
         </div>
 
 
-        <Button
+        <!-- <Button
           icon="pi pi-chevron-right"
           text
           class="nav-btn"
-        />
+        /> -->
       </div>
 
 
@@ -53,19 +53,19 @@
       <!-- DAY TITLE -->
       <div class="flex justify-content-between align-items-center mb-2">
         <div>
-          <strong>Sun, 25 Jan</strong>
-          <small class="ml-2 text-500">14 classes</small>
+          <strong>{{ selectedDate }}</strong>
+          <small class="ml-2 text-500">{{ dateSchedule.length }} classes</small>
         </div>
 
-        <div class="flex gap-2">
+        <!-- <div class="flex gap-2">
           <Tag severity="success" value="Booked" />
           <Tag severity="warning" value="Waitlisted" />
-        </div>
+        </div> -->
       </div>
 
       <div class="flex flex-column gap-3">
         <Card
-          v-for="item in schedules"
+          v-for="item in dateSchedule"
           :key="item.id"
           class="schedule-card"
         >
@@ -73,19 +73,26 @@
             <div class="grid align-items-center">
 
               <div class="col-12 md:col-2">
-                <strong>{{ item.time }}</strong>
-                <small class="block text-500">{{ item.duration }}</small>
+                <strong>{{ formattedTime(item.datetime_schedule) }}</strong>
+                <!-- <small class="block text-500">{{ item.duration }}</small> -->
               </div>
 
-              <div class="col-12 md:col-7">
-                <div class="font-medium">{{ item.title }}</div>
+              <div class="col-12 md:col-6">
+                <div class="font-medium">{{ item.course_class.name }}</div>
                 <small class="text-500">
-                  {{ item.instructor }} · {{ item.location }}
+                  Instructor: {{ item.trainer.name }}
                 </small>
               </div>
 
-              <div class="col-12 md:col-3 text-right">
-                <Tag value="Booking Closed" severity="secondary" />
+              <div class="col-12 md:col-2">
+                <small class="text-500">
+                  {{ item.used_capacity }} / {{ item.course_class.class_capacity }}
+                </small>
+              </div>
+
+              <div class="col-12 md:col-2 text-right">
+                <Tag v-if="item.used_capacity == item.course_class.class_capacity" value="Booking Closed" severity="secondary" />
+                <Button v-if="item.used_capacity < item.course_class.class_capacity" label="Book Now" rounded />
               </div>
 
             </div>
@@ -102,10 +109,15 @@
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import dayjs from 'dayjs'
 dayjs.locale('id')
 
 const dates = ref([])
+const loading = ref(true)
+const schedule = ref([])
+const dateSchedule = ref([])
+const selectedDate = ref(null)
 
 const generateDates = () => {
   const start = dayjs()
@@ -113,12 +125,16 @@ const generateDates = () => {
 
   const temp = []
   let current = start
+  selectedDate.value = current.format('ddd, DD MMMM')
+
+  dateSchedule.value = schedule.value.filter(item => item.datetime_schedule == selectedDate.value.iso)
 
   while (current.isBefore(end) || current.isSame(end, 'day')) {
     temp.push({
-      iso: current.format('YYYY-MM-DD'),
+      iso: current.format('YYYY-MM-DD HH:MM:ss'),
       dayLabel: current.format('ddd'),
       dayNumber: current.format('DD'),
+      dayMonth: current.format('ddd, DD MMMM'),
       active: current.isSame(start, 'day'),
     })
 
@@ -128,9 +144,33 @@ const generateDates = () => {
   dates.value = temp
 }
 
+// const formattedDate = ((fullDate) => {
+//   let dateObj = new Date(fullDate.replace(' ', 'T'))
+//   dateObj.toLocaleDateString('en-US', {
+//     weekday: 'short',
+//     day: '2-digit',
+//     month: 'long',
+//     year: 'numeric'
+//   })
+// })
+
+const formattedTime = ((fullDate) => {
+  let dateObj = new Date(fullDate.replace(' ', 'T'))
+  return dateObj.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  })
+})
+
 const setActiveDate = (selected) => {
+  dateSchedule.value = ref([])
+
   dates.value.forEach(d => (d.active = false))
   selected.active = true
+  selectedDate.value = selected.dayMonth
+
+  dateSchedule.value = schedule.value.filter(item => dayjs(item.datetime_schedule).isSame(dayjs(selected.iso), 'day'))
 
   // later: fetch timetable(selected.iso)
 }
@@ -174,30 +214,19 @@ const setActiveDate = (selected) => {
 //   },
 // ])
 
-const schedules = ref([
-  {
-    id: 1,
-    time: '7:00am',
-    duration: '50 mins',
-    title: 'Chair Barrel Group Class',
-    instructor: 'Medina Ms',
-    location: 'Yoo-Na Pilates Sunter',
-    status: 'closed',
-    statusText: 'Booking Closed',
-  },
-  {
-    id: 2,
-    time: '7:00am',
-    duration: '50 mins',
-    title: 'Tower Group Class',
-    instructor: 'Adrian Mr',
-    location: 'Yoo-Na Pilates Sunter',
-    status: 'closed',
-    statusText: 'Booking Closed',
-  },
-])
+const fetchSchedule = async () => {
+  try {
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedules')
+    schedule.value = res.data.data
+  } finally {
+    loading.value = false
+  }
+}
 
-onMounted(generateDates)
+onMounted(() => {
+  fetchSchedule()
+  generateDates()
+})
 </script>
 
 <style scoped>
