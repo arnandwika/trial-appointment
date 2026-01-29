@@ -163,16 +163,43 @@ const fetchPackages = async () => {
 const formatPrice = (price) =>
   'Rp' + price.toLocaleString('id-ID')
 
-const addToCart = (pkg) => {
+const addToCart = async (pkg) => {
   if (!store.getters.user) {
     openModal()
   } else {
-    const existing = cart.value.find(i => i.id === pkg.id)
+    try {
+      const res = await axios.get(
+        process.env.VUE_APP_APPOINTMENT_API + 'user',
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.token
+          }
+        },
+      )
 
-    if (existing) {
-      existing.qty++
-    } else {
-      cart.value.push({ ...pkg, qty: 1 })
+      store.dispatch('login', res.data)
+      loading.value = false
+
+      const existing = cart.value.find(i => i.id === pkg.id)
+
+      if (existing) {
+        existing.qty++
+      } else {
+        cart.value.push({ ...pkg, qty: 1 })
+      }
+    } catch (error) {
+      if (localStorage.token) {
+        toast.add({
+          severity: 'error',
+          summary: 'Token Habis',
+          detail: 'Silakan login kembali',
+          life: 3000
+        })
+      }
+      localStorage.removeItem('token')
+      store.dispatch('logout')
+      loading.value = false
+      openModal()
     }
 
     // animateToCart(event.target)
@@ -218,10 +245,8 @@ const removeFromCart = (id) => {
 const checkout = async () => {
   loading.value = true
   let total_amount = 0
-  let total_quota = 0
   cart.value.forEach(element => {
     total_amount += parseInt(element.price)
-    total_quota += parseInt(element.quota)
   })
   try {
     await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'orders', {
@@ -230,7 +255,7 @@ const checkout = async () => {
         class_id: i.class_id,
         package_name: i.title,
         class_name: i.course_class.name,
-        total_quota: total_quota,
+        total_quota: i.quota,
         used_quota: 0,
       })),
       user_id: store.getters.user.id,

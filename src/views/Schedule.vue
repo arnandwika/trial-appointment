@@ -92,7 +92,7 @@
 
               <div class="col-12 md:col-2 text-right">
                 <Tag v-if="item.used_capacity == item.course_class.class_capacity" value="Booking Closed" severity="secondary" />
-                <Button v-if="item.used_capacity < item.course_class.class_capacity" label="Book Now" rounded />
+                <Button :loading="loading" v-if="item.used_capacity < item.course_class.class_capacity" label="Book Now" rounded @click="validationBook(item)"/>
               </div>
 
             </div>
@@ -106,9 +106,12 @@
 </template>
 
 <script setup>
+import { useLoginModal } from '@/composables/useLoginModal'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { ref, onMounted } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useStore } from 'vuex'
 import axios from 'axios'
 import dayjs from 'dayjs'
 dayjs.locale('id')
@@ -118,6 +121,10 @@ const loading = ref(true)
 const schedule = ref([])
 const dateSchedule = ref([])
 const selectedDate = ref(null)
+
+const { openModal } = useLoginModal()
+const store = useStore()
+const toast = useToast()
 
 const generateDates = () => {
   const start = dayjs()
@@ -216,9 +223,77 @@ const setActiveDate = (selected) => {
 
 const fetchSchedule = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedules')
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule')
     schedule.value = res.data.data
   } finally {
+    loading.value = false
+  }
+}
+
+const validationBook = async (schedule) => {
+  loading.value = true
+  if (!store.getters.user) {
+    openModal()
+  } else {
+    try {
+      const res = await axios.get(
+        process.env.VUE_APP_APPOINTMENT_API + 'user',
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.token
+          }
+        },
+      )
+
+      store.dispatch('login', res.data)
+      book(schedule)
+    } catch (error) {
+      if (localStorage.token) {
+        toast.add({
+          severity: 'error',
+          summary: 'Token Habis',
+          detail: 'Silakan login kembali',
+          life: 3000
+        })
+      }
+      localStorage.removeItem('token')
+      store.dispatch('logout')
+      loading.value = false
+      openModal()
+    }
+
+    // animateToCart(event.target)
+  }
+}
+
+const book = async (schedule) => {
+  console.log(store.getters.userTransaction)
+  try {
+    await axios.post(
+      process.env.VUE_APP_APPOINTMENT_API + 'booking',
+      {
+        user_id: store.getters.user.id,
+        order_detail_id: store.getters.userTransaction[0].order_details[0].id,
+        class_id: schedule.course_class.id,
+        trainer_id: schedule.trainer.id,
+        schedule_id: schedule.id,
+        booking_date: schedule.datetime_schedule,
+        status: 'active'
+      }
+    )
+    toast.add({
+      severity: 'success',
+      summary: 'Berhasil Booking Kelas',
+      life: 3000
+    })
+    loading.value = false
+  } catch (e) {
+    toast.add({
+      severity: 'error',
+      summary: 'Server Error',
+      detail: 'Terjadi kesalahan saat menyimpan booking',
+      life: 3000
+    })
     loading.value = false
   }
 }

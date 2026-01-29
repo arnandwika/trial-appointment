@@ -27,6 +27,13 @@ a {
   background-color: $bg-primary
 }
 
+.clickable-text {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 h1 {
   font-size: 3.5rem;   // desktop
   line-height: 1.15;

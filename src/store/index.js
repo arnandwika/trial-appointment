@@ -2,11 +2,15 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    user: null
+    user: null,
+    userTransaction: null,
   },
   mutations: {
     setUser(state, user) {
       state.user = user
+    },
+    setUserTransaction(state, userTransaction) {
+      state.userTransaction = userTransaction
     }
   },
   actions: {
@@ -15,9 +19,13 @@ export default createStore({
     },
     logout({ commit }) {
       commit('setUser', null)
+    },
+    storeUserTransaction({ commit }, userTransaction) {
+      commit('setUserTransaction', userTransaction)
     }
   },
   getters: {
-    user: (state) => state.user
+    user: (state) => state.user,
+    userTransaction: (state) => state.userTransaction
   }
 })

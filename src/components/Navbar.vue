@@ -26,8 +26,11 @@
         />
       </div>
 
-      <p class="font-semibold col-offset-4 md:col-offset-0 md:col-3 md:flex justify-content-end flex-wrap" v-if="userLogin">
-        {{ userLogin.name }}
+      <p
+        class="clickable-text font-semibold col-offset-4 md:col-offset-0 md:col-3 md:flex justify-content-end flex-wrap"
+        v-if="userLogin"
+      >
+        <span @click="visible = true">{{ userLogin.name }}</span>
       </p>
 
       <!-- Mobile Hamburger -->
@@ -58,12 +61,71 @@
         />
       </div>
     </transition>
+    <Dialog
+      v-model:visible="visible"
+      modal
+      :position="isMobile ? 'bottom' : 'center'"
+      :style="dialogStyle"
+      :breakpoints="{
+        '1024px': '70vw',
+        '768px': '90vw'
+      }"
+      header="Order Details"
+      dismissableMask
+    >
+      <div
+        v-for="order in orders"
+        :key="order.id"
+        class="p-2">
+        <!-- Order Info -->
+        <div class="mb-3">
+          <div class="font-semibold text-lg">
+            {{ order.order_no }}
+          </div>
+          <div class="text-sm text-600">
+            {{ order.user_name }}
+          </div>
+        </div>
+
+        <Divider />
+
+        <!-- Package List -->
+        <div
+          v-for="detail in order.order_details"
+          :key="detail.id"
+          class="py-3 border-bottom-1 surface-border"
+        >
+          <div class="font-medium">
+            {{ detail.package_name }}
+          </div>
+
+          <div class="text-sm text-600 mb-2">
+            {{ detail.class_name }}
+          </div>
+
+          <div class="flex justify-content-between text-sm">
+            <span>Total</span>
+            <span>{{ detail.total_quota }}</span>
+          </div>
+
+          <div class="flex justify-content-between text-sm">
+            <span>Used</span>
+            <span>{{ detail.used_quota }}</span>
+          </div>
+
+          <div class="flex justify-content-between text-sm font-semibold">
+            <span>Remaining</span>
+            <span>{{ detail.remaining_quota }}</span>
+          </div>
+        </div>
+      </div>
+    </Dialog>
   </header>
 </template>
 
 <script setup>
 import { useLoginModal } from '@/composables/useLoginModal'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
@@ -77,12 +139,18 @@ const { openModal } = useLoginModal()
 
 const mobileOpen = ref(false)
 const userLogin = computed(() => store.getters.user)
-const showExpiredToken = ref(true)
+const visible = ref(false)
 const loading = ref(true)
+const isMobile = ref(false)
+const orders = computed(() => store.getters.userTransaction)
+
+const checkScreen = () => {
+  isMobile.value = window.innerWidth < 768
+}
 
 onMounted(async() => {
-  console.log(store.getters.user)
-  console.log(userLogin)
+  checkScreen()
+  window.addEventListener('resize', checkScreen)
   try {
     const res = await axios.get(
       process.env.VUE_APP_APPOINTMENT_API + 'user',
@@ -94,8 +162,11 @@ onMounted(async() => {
     )
 
     store.dispatch('login', res.data)
-    showExpiredToken.value = false
     loading.value = false
+
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + res.data.id)
+    store.dispatch('storeUserTransaction', res2.data.data)
+    console.log(store.getters.userTransaction)
   } catch (error) {
     if (localStorage.token) {
       toast.add({
@@ -107,9 +178,12 @@ onMounted(async() => {
     }
     localStorage.removeItem('token')
     store.dispatch('logout')
-    showExpiredToken.value = true
     loading.value = false
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreen)
 })
 
 const toggleMenu = () => {
@@ -127,6 +201,12 @@ const openLogin = () => {
 const routing = (routeTo) => {
   router.push(routeTo)
 }
+
+const dialogStyle = computed(() => {
+  return isMobile.value
+    ? { height: '85vh', width: '100vw', borderRadius: '1rem 1rem 0 0' }
+    : { width: '600px' }
+})
 
 </script>
 
