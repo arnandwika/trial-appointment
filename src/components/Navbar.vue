@@ -73,6 +73,13 @@
       header="Order Details"
       dismissableMask
     >
+      <Button
+        :loading="loading"
+        label="Log Out"
+        aria-expanded="true"
+        severity="danger"
+        class="mb-4"
+        @click="logout()" />
       <div
         v-for="order in orders"
         :key="order.id"
@@ -144,6 +151,12 @@ const loading = ref(true)
 const isMobile = ref(false)
 const orders = computed(() => store.getters.userTransaction)
 
+const logout = () => {
+  store.dispatch('logout')
+  localStorage.removeItem('token')
+  window.location.reload()
+}
+
 const checkScreen = () => {
   isMobile.value = window.innerWidth < 768
 }
@@ -164,7 +177,7 @@ onMounted(async() => {
     store.dispatch('login', res.data)
     loading.value = false
 
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + res.data.id)
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
     store.dispatch('storeUserTransaction', res2.data.data)
     console.log(store.getters.userTransaction)
   } catch (error) {

@@ -231,10 +231,10 @@ const fetchSchedule = async () => {
 }
 
 const validationBook = async (schedule) => {
-  loading.value = true
   if (!store.getters.user) {
     openModal()
   } else {
+    loading.value = true
     try {
       const res = await axios.get(
         process.env.VUE_APP_APPOINTMENT_API + 'user',
@@ -246,6 +246,10 @@ const validationBook = async (schedule) => {
       )
 
       store.dispatch('login', res.data)
+
+      const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+      store.dispatch('storeUserTransaction', res2.data.data)
+
       book(schedule)
     } catch (error) {
       if (localStorage.token) {

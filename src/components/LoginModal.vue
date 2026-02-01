@@ -123,7 +123,7 @@ const login = async () => {
     localStorage.setItem('token', res.data.data.token)
     showLogin.value = false
 
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + res.data.id)
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
     store.dispatch('storeUserTransaction', res2.data.data)
 
     toast.add({
