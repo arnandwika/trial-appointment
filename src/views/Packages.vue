@@ -265,6 +265,10 @@ const checkout = async () => {
 
     cart.value = []
     showCart.value = false
+
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+    store.dispatch('storeUserTransaction', res2.data.data)
+
     toast.add({
       severity: 'success',
       summary: 'Berhasil Membeli Paket',

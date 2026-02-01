@@ -267,34 +267,35 @@ const validationBook = async (schedule) => {
 }
 
 const book = async (schedule) => {
-  console.log(store.getters.userTransaction)
-  try {
-    await axios.post(
-      process.env.VUE_APP_APPOINTMENT_API + 'booking',
-      {
-        user_id: store.getters.user.id,
-        order_detail_id: store.getters.userTransaction[0].order_details[0].id,
-        class_id: schedule.course_class.id,
-        trainer_id: schedule.trainer.id,
-        schedule_id: schedule.id,
-        booking_date: schedule.datetime_schedule,
-        status: 'active'
-      }
-    )
-    toast.add({
-      severity: 'success',
-      summary: 'Berhasil Booking Kelas',
-      life: 3000
-    })
-    loading.value = false
-  } catch (e) {
-    toast.add({
-      severity: 'error',
-      summary: 'Server Error',
-      detail: 'Terjadi kesalahan saat menyimpan booking',
-      life: 3000
-    })
-    loading.value = false
+  if (store.getters.userTransaction) {
+    try {
+      await axios.post(
+        process.env.VUE_APP_APPOINTMENT_API + 'booking',
+        {
+          user_id: store.getters.user.id,
+          order_detail_id: store.getters.userTransaction[0].order_details[0].id,
+          class_id: schedule.course_class.id,
+          trainer_id: schedule.trainer.id,
+          schedule_id: schedule.id,
+          booking_date: schedule.datetime_schedule,
+          status: 'active'
+        }
+      )
+      toast.add({
+        severity: 'success',
+        summary: 'Berhasil Booking Kelas',
+        life: 3000
+      })
+      loading.value = false
+    } catch (e) {
+      toast.add({
+        severity: 'error',
+        summary: 'Server Error',
+        detail: 'Terjadi kesalahan saat menyimpan booking',
+        life: 3000
+      })
+      loading.value = false
+    }
   }
 }
 
