@@ -133,7 +133,7 @@
 
 <script setup>
 import { useLoginModal } from '@/composables/useLoginModal'
-// import { useAlert } from '@/composables/useAlert'
+import { useAlert } from '@/composables/useAlert'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { ref, onMounted, computed } from 'vue'
@@ -149,7 +149,7 @@ const store = useStore()
 const toast = useToast()
 
 const { openModal } = useLoginModal()
-// const { confirm } = useAlert()
+const { confirm } = useAlert()
 
 const fetchPackages = async () => {
   try {
@@ -193,7 +193,7 @@ const addToCart = async (pkg) => {
           severity: 'error',
           summary: 'Token Habis',
           detail: 'Silakan login kembali',
-          life: 3000
+          life: 4000
         })
       }
       localStorage.removeItem('token')
@@ -269,16 +269,13 @@ const checkout = async () => {
     const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
     store.dispatch('storeUserTransaction', res2.data.data)
 
-    toast.add({
-      severity: 'success',
-      summary: 'Berhasil Membeli Paket',
-      life: 3000
-    })
+    confirm('Transaksi Anda Berhasil Dibuat', 'Silakan hubungi Admin setelah transfer untuk proses verifikasi dan aktivasi Paket Anda')
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Gagal Membeli Paket',
-      life: 3000
+      summary: 'Error',
+      detail: 'Gagal membuat transaksi paket',
+      life: 4000
     })
     console.log(e)
   } finally {

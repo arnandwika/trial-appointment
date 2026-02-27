@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 
-export default createStore({
+const store = createStore({
   state: {
     user: null,
     userTransaction: null,
@@ -29,3 +29,5 @@ export default createStore({
     userTransaction: (state) => state.userTransaction
   }
 })
+
+export default store

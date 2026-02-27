@@ -16,6 +16,7 @@ import Tag from 'primevue/tag'
 import Badge from 'primevue/badge'
 import Divider from 'primevue/divider'
 import OverlayPanel from 'primevue/overlaypanel'
+import Menu from 'primevue/menu'
 
 import 'primevue/resources/themes/lara-light-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -38,6 +39,7 @@ app.component('Tag', Tag)
 app.component('Badge', Badge)
 app.component('Divider', Divider)
 app.component('OverlayPanel', OverlayPanel)
+app.component('Menu', Menu)
 
 app.use(router)
 app.use(store)

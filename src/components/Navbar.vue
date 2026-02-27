@@ -3,12 +3,13 @@
     <div class="navbar-container container grid">
       <!-- Logo -->
       <div class="logo md:col-3 text-left">
-        <img @click="routing('/')" src="@/assets/identity_logo/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto" alt="Morgen Pilates" />
+        <img @click="routing('/')" src="@/assets/identity_logo/full_logo.png" class="w-10rem md:w-13rem lg:w-15rem h-auto clickable-text" alt="Morgen Pilates" />
       </div>
 
       <!-- Desktop Menu -->
       <nav class="nav-links desktop md:col-6 md:flex justify-content-center flex-wrap">
-        <router-link to="/">Home</router-link>
+        <router-link v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
+        <router-link v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
         <router-link to="/course-classes">Course Classes</router-link>
         <router-link to="/schedule">Schedule</router-link>
         <router-link to="/packages">Packages</router-link>
@@ -27,16 +28,16 @@
       </div>
 
       <p
-        class="clickable-text font-semibold col-offset-4 md:col-offset-0 md:col-3 md:flex justify-content-end flex-wrap"
+        class="font-semibold col-offset-2 md:col-offset-0 col-3 md:flex justify-content-end flex-wrap"
         v-if="userLogin"
       >
-        <span @click="visible = true">{{ userLogin.name }}</span>
+        <span class="clickable-text" @click="toggle($event)">{{ userLogin.name }}</span>
       </p>
 
       <!-- Mobile Hamburger -->
       <Button
         icon="pi pi-bars"
-        class="mobile menu-btn"
+        :class="userLogin ? 'menu-btn flex justify-content-end flex-wrap mobile md:hidden' : 'mobile menu-btn col-offset-5'"
         text
         @click="toggleMenu"
       />
@@ -61,7 +62,7 @@
         />
       </div>
     </transition>
-    <Dialog
+    <!-- <Dialog
       v-model:visible="visible"
       modal
       :position="isMobile ? 'bottom' : 'center'"
@@ -84,7 +85,7 @@
         v-for="order in orders"
         :key="order.id"
         class="p-2">
-        <!-- Order Info -->
+
         <div class="mb-3">
           <div class="font-semibold text-lg">
             {{ order.order_no }}
@@ -96,7 +97,7 @@
 
         <Divider />
 
-        <!-- Package List -->
+
         <div
           v-for="detail in order.order_details"
           :key="detail.id"
@@ -126,7 +127,12 @@
           </div>
         </div>
       </div>
-    </Dialog>
+    </Dialog> -->
+    <Menu
+      ref="menu"
+      :model="items"
+      :popup="true"
+    />
   </header>
 </template>
 
@@ -146,16 +152,42 @@ const { openModal } = useLoginModal()
 
 const mobileOpen = ref(false)
 const userLogin = computed(() => store.getters.user)
-const visible = ref(false)
 const loading = ref(true)
 const isMobile = ref(false)
-const orders = computed(() => store.getters.userTransaction)
+const menu = ref()
+
+const toggle = (event) => {
+  menu.value.toggle(event)
+}
 
 const logout = () => {
   store.dispatch('logout')
   localStorage.removeItem('token')
   window.location.reload()
 }
+
+const items = ref([
+  {
+    label: 'Account',
+    items: [
+      {
+        label: 'My Order',
+        icon: 'pi pi-receipt',
+        command: () => router.push('/my-order')
+      }
+    ]
+  },
+  {
+    label: 'System',
+    items: [
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        command: logout
+      }
+    ]
+  }
+])
 
 const checkScreen = () => {
   isMobile.value = window.innerWidth < 768
@@ -186,7 +218,7 @@ onMounted(async() => {
         severity: 'error',
         summary: 'Token Habis',
         detail: 'Silakan login kembali',
-        life: 3000
+        life: 4000
       })
     }
     localStorage.removeItem('token')
@@ -215,11 +247,11 @@ const routing = (routeTo) => {
   router.push(routeTo)
 }
 
-const dialogStyle = computed(() => {
-  return isMobile.value
-    ? { height: '85vh', width: '100vw', borderRadius: '1rem 1rem 0 0' }
-    : { width: '600px' }
-})
+// const dialogStyle = computed(() => {
+//   return isMobile.value
+//     ? { height: '85vh', width: '100vw', borderRadius: '1rem 1rem 0 0' }
+//     : { width: '600px' }
+// })
 
 </script>
 

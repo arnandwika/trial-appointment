@@ -2,16 +2,17 @@
   <div class="home min-h-screen flex flex-column">
     <Navbar />
 
-    <section class="fex-1 hero relative">
+    <section class="hero relative">
       <div
         class="overlay text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
       >
         <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
-          Revitalize and Strenghten Your Body
+          Move better. Feel stronger.
         </h1>
 
-        <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
+        <p class="text-base md:text-xl font-semibold max-w-30rem mb-4 line-height-3">
+          Morgen is a calm, thoughtfully designed space offering Reformer Pilates, Cadillac Pilates, and Yoga.<br><br>
+          A modern Pilates and Yoga studio in Jakarta focused on mindful movement and lasting strength.
         </p>
 
         <Button label="Book a Class" rounded @click="routing('schedule')" />
@@ -21,7 +22,7 @@
     <!-- ABOUT SECTION -->
     <section class="about py-6">
       <div
-        class="container grid align-items-center gap-4 px-3 md:px-6"
+        class="container grid align-items-center gap-2 pl-1 md:pl-4"
       >
         <!-- Image -->
         <div class="col-12 md:col-6">
@@ -33,13 +34,24 @@
         </div>
 
         <!-- Text -->
-        <div class="col-12 md:col-4">
+        <div class="col-12 md:col-5">
           <h1 class="text-2xl md:text-4xl mb-3">
-            About Morgen Pilates & Yoga Studio
+            About Morgen
           </h1>
           <p class="text-base md:text-lg line-height-3">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum quam incidunt, reiciendis officia recusandae consequatur molestiae eum pariatur illum, voluptates tempora dolorem reprehenderit! Quibusdam magni natus veniam sit optio unde?
+            We focus on quality movement, proper alignment, and steady progress. Every session is guided with attention and care, creating a supportive environment for all levels — from beginners to experienced practitioners.<br>
           </p>
+          <p class="text-base md:text-lg line-height-3">
+            At Morgen, movement is simple, focused, and purposeful.<br>
+          </p>
+          <span class="text-base md:text-lg line-height-3">Why Morgen?</span>
+          <ul class="text-base md:text-lg line-height-3">
+            <li>Small class sizes</li>
+            <li>Attentive instructors</li>
+            <li>Clean, minimal studio environment</li>
+            <li>Beginner-friendly options</li>
+            <li>Focus on sustainable results</li>
+          </ul>
           <Button label="View Classes" rounded @click="routing('course-classes')" />
         </div>
       </div>
@@ -56,7 +68,9 @@
           </h1>
 
           <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus porro dicta commodi aspernatur, explicabo cumque voluptas quasi enim error eum sed dolorum in asperiores corporis quam fugit recusandae nobis quos.
+            Start your practice.<br><br>
+            Consistency creates change.<br><br>
+            Begin your movement journey with us today.
           </p>
 
           <Button label="View Packages" rounded @click="routing('packages')" />
@@ -110,7 +124,7 @@ const routing = (routeTo) => {
   top: 50%;
   left: 6%;
   transform: translateY(-50%);
-  max-width: 520px;
+  max-width: 620px;
 }
 
 .overlay2 {

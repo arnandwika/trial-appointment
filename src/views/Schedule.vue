@@ -257,7 +257,7 @@ const validationBook = async (schedule) => {
           severity: 'error',
           summary: 'Token Habis',
           detail: 'Silakan login kembali',
-          life: 3000
+          life: 4000
         })
       }
       localStorage.removeItem('token')
@@ -288,7 +288,7 @@ const book = async (schedule) => {
       toast.add({
         severity: 'success',
         summary: 'Berhasil Booking Kelas',
-        life: 3000
+        life: 4000
       })
       loading.value = false
     } catch (e) {
@@ -296,7 +296,7 @@ const book = async (schedule) => {
         severity: 'error',
         summary: 'Server Error',
         detail: 'Terjadi kesalahan saat menyimpan booking',
-        life: 3000
+        life: 4000
       })
       loading.value = false
     }

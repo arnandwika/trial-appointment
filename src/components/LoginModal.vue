@@ -130,12 +130,12 @@ const login = async () => {
       severity: 'success',
       summary: 'Berhasil Login',
       detail: 'Selamat datang ' + res.data.data.user.name,
-      life: 3000
+      life: 4000
     })
-    loading.value = false
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login failed'
     error('Gagal Login', errorMessage)
   }
+  loading.value = false
 }
 </script>
