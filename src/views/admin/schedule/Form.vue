@@ -206,36 +206,30 @@ const createSchedule = async () => {
   schedule.value.datetime_schedule.forEach(element => {
     formattedDate.push(dayjs(element).format('YYYY-MM-DD HH:mm:ss'))
   })
-  const formData = {
+  try {
+    const formData = {
       class_id: schedule.value.class_id,
       trainer_id: schedule.value.trainer_id,
       datetime_schedule: formattedDate,
     }
-  console.log('Create:', JSON.stringify(formData))
-  // try {
-  //   const formData = {
-  //     class_id: schedule.value.class_id,
-  //     trainer_id: schedule.value.trainer_id,
-  //     datetime_schedule: dayjs(schedule.value.datetime_schedule).format('YYYY-MM-DD HH:mm:ss'),
-  //   }
 
-  //   await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'schedule', formData)
-  //   toast.add({
-  //     severity: 'success',
-  //     summary: 'Success',
-  //     detail: 'Berhasil membuat jadwal baru',
-  //     life: 4000
-  //   })
-  //   isLoading.value = false
-  //   router.push({ name: 'ScheduleList' })
-  // } catch (e) {
-  //   toast.add({
-  //     severity: 'error',
-  //     summary: 'Error',
-  //     detail: 'Terjadi kesalahan saat menyimpan jadwal',
-  //     life: 4000
-  //   })
-  //   isLoading.value = false
-  // }
+    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'schedule', formData)
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Berhasil membuat jadwal baru',
+      life: 4000
+    })
+    isLoading.value = false
+    router.push({ name: 'ScheduleList' })
+  } catch (e) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Terjadi kesalahan saat menyimpan jadwal',
+      life: 4000
+    })
+    isLoading.value = false
+  }
 }
 </script>

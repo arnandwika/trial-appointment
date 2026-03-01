@@ -12,6 +12,8 @@
           v-model="reportDate"
           dateFormat="dd-mm-yy"
           :maxDate="dateNow"
+          placeholder="Date Report"
+          selectionMode="range"
           class="mr-2 w-7 md:w-auto"
         />
         <Button
@@ -76,7 +78,7 @@ const orders = ref(null)
 const reportDate = ref(null)
 
 const downloadReport = async () => {
-
+  console.log(reportDate.value)
 }
 
 const fetchOrders = async () => {

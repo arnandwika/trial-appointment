@@ -121,9 +121,6 @@ const login = async () => {
     localStorage.setItem('token', res.data.data.token)
     showLogin.value = false
 
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-    store.dispatch('storeUserTransaction', res2.data.data)
-
     toast.add({
       severity: 'success',
       summary: 'Berhasil Login',
@@ -132,6 +129,13 @@ const login = async () => {
     })
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login failed'
+  }
+
+  try {
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+    store.dispatch('storeUserTransaction', res2.data.data)
+  } catch (error) {
+    console.log(error)
   }
   loading.value = false
 }

@@ -266,9 +266,6 @@ const checkout = async () => {
     cart.value = []
     showCart.value = false
 
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-    store.dispatch('storeUserTransaction', res2.data.data)
-
     confirm('Transaksi Anda Berhasil Dibuat', 'Silakan hubungi Admin setelah transfer untuk proses verifikasi dan aktivasi Paket Anda')
   } catch (e) {
     toast.add({
@@ -280,6 +277,13 @@ const checkout = async () => {
     console.log(e)
   } finally {
     loading.value = false
+  }
+
+  try {
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+    store.dispatch('storeUserTransaction', res2.data.data)
+  } catch (error) {
+    console.log(error)
   }
 }
 

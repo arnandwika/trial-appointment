@@ -247,9 +247,6 @@ const validationBook = async (schedule) => {
 
       store.dispatch('login', res.data)
 
-      const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-      store.dispatch('storeUserTransaction', res2.data.data)
-
       book(schedule)
     } catch (error) {
       if (localStorage.token) {
@@ -264,6 +261,13 @@ const validationBook = async (schedule) => {
       store.dispatch('logout')
       loading.value = false
       openModal()
+    }
+
+    try {
+      const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+      store.dispatch('storeUserTransaction', res2.data.data)
+    } catch (error) {
+      console.log(error)
     }
 
     // animateToCart(event.target)

@@ -154,10 +154,6 @@ onMounted(async() => {
 
     store.dispatch('login', res.data)
     loading.value = false
-
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-    store.dispatch('storeUserTransaction', res2.data.data)
-    console.log(store.getters.userTransaction)
   } catch (error) {
     if (localStorage.token) {
       toast.add({
@@ -166,6 +162,13 @@ onMounted(async() => {
         detail: 'Silakan login kembali',
         life: 4000
       })
+    }
+
+    try {
+      const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+      store.dispatch('storeUserTransaction', res2.data.data)
+    } catch (error) {
+      console.log(error)
     }
     localStorage.removeItem('token')
     store.dispatch('logout')

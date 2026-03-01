@@ -208,10 +208,6 @@ onMounted(async() => {
 
     store.dispatch('login', res.data)
     loading.value = false
-
-    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-    store.dispatch('storeUserTransaction', res2.data.data)
-    console.log(store.getters.userTransaction)
   } catch (error) {
     if (localStorage.token) {
       toast.add({
@@ -224,6 +220,13 @@ onMounted(async() => {
     localStorage.removeItem('token')
     store.dispatch('logout')
     loading.value = false
+  }
+
+  try {
+    const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+    store.dispatch('storeUserTransaction', res2.data.data)
+  } catch (error) {
+    console.log(error)
   }
 })
 
