@@ -51,7 +51,7 @@
           <Card class="h-full">
             <template #header>
               <img
-                :src="require(`@/assets/course_class/${item.image_url}`)"
+                :src="apiStorage + item.image_url"
                 alt=""
                 class="w-full h-11rem object-fit-cover border-round-top"
               />
@@ -98,6 +98,7 @@ const router = useRouter()
 // const levels = ['Open to all', 'Beginner', 'Intermediate', 'Advanced']
 
 const loading = ref(true)
+const apiStorage = ref(null)
 
 const courseClasses = ref([])
 
@@ -115,6 +116,7 @@ const routing = (routeTo) => {
 }
 
 onMounted(async () => {
+  apiStorage.value = process.env.VUE_APP_APPOINTMENT_API_STORAGE
   await fetchCourseClasses()
 })
 </script>

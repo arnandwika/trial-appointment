@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full overflow-x-auto">
     <!-- Header -->
     <div class="flex justify-content-between align-items-center mb-4">
       <div>
@@ -23,7 +23,9 @@
       paginator
       :rows="10"
       responsiveLayout="scroll"
-      class="shadow-1"
+      scrollable
+      scrollHeight="flex"
+      class="w-full shadow-1"
     >
       <Column field="name" header="Name" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="image_url" header="Image" :headerStyle="{ justifyContent: 'center' }" />
