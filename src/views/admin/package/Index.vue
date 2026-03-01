@@ -83,6 +83,7 @@ const buttonIsLoading = ref(false)
 const packages = ref(null)
 
 const fetchPackages = async () => {
+  isLoading.value = true
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'package')
     packages.value = res.data.data
@@ -109,6 +110,7 @@ const deletePackage = async (id) => {
           detail: 'Berhasil menonaktifkan data paket',
           life: 4000
         })
+        await fetchPackages()
       } catch (e) {
         toast.add({
           severity: 'error',

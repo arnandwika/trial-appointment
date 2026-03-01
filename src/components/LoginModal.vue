@@ -88,14 +88,12 @@ import { useLoginModal } from '@/composables/useLoginModal'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { useAlert } from '@/composables/useAlert'
 import { useToast } from 'primevue/usetoast'
 
 const { showLogin, closeModal } = useLoginModal()
 
 const toast = useToast()
 const store = useStore()
-const { error } = useAlert()
 
 const email = ref('')
 const password = ref('')
@@ -134,7 +132,6 @@ const login = async () => {
     })
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Login failed'
-    error('Gagal Login', errorMessage)
   }
   loading.value = false
 }

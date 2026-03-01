@@ -12,7 +12,7 @@ import MyOrder from '@/views/MyOrder.vue'
 import AdminDashboard from '@/views/admin/Dashboard.vue'
 import AdminLayout from '@/views/admin/AdminLayout.vue'
 
-import OrderApproval from '@/views/admin/OrderApproval.vue'
+import ListOrder from '@/views/admin/ListOrder.vue'
 
 import CourseList from '@/views/admin/course_classes/Index.vue'
 import CourseForm from '@/views/admin/course_classes/Form.vue'
@@ -68,9 +68,9 @@ const routes = [
         component: AdminDashboard
       },
       {
-        path: 'order-approval',
-        name: 'OrderApproval',
-        component: OrderApproval
+        path: 'list-order',
+        name: 'ListOrder',
+        component: ListOrder
       },
       {
         path: 'course-classes',

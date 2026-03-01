@@ -83,6 +83,7 @@ const buttonIsLoading = ref(false)
 const schedules = ref(null)
 
 const fetchSchedules = async () => {
+  isLoading.value = true
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule')
     schedules.value = res.data.data
@@ -109,6 +110,7 @@ const deleteSchedule = async (id) => {
           detail: 'Berhasil menonaktifkan data jadwal kelas',
           life: 4000
         })
+        await fetchSchedules()
       } catch (e) {
         toast.add({
           severity: 'error',

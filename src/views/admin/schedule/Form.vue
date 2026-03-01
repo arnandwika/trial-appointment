@@ -30,23 +30,15 @@
         <div class="field col-12 md:col-6 flex flex-column gap-2">
           <label for="schedule_at">Schedule At</label>
           <Calendar
-            id="schedule_at"
-            v-model="scheduleAt"
+            v-model="schedule.datetime_schedule"
             showTime
             hourFormat="24"
-            showSeconds
-            dateFormat="yy-mm-dd"
+            dateFormat="dd-mm-yy"
+            selectionMode="multiple"
+            :minDate="dateNow"
             class="w-full"
           />
         </div>
-
-        <!-- Submit Button -->
-        <Button
-          label="Submit"
-          icon="pi pi-check"
-          type="submit"
-          class="w-full"
-        />
 
         <!-- Active -->
         <!-- <div class="field col-12 md:col-6 flex align-items-center">
@@ -93,7 +85,7 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const store = useStore()
-const scheduleAt = ref(null)
+const dateNow = ref(new Date());
 
 const schedule = ref({
   id: null,
@@ -210,30 +202,40 @@ const updateSchedule = async () => {
 
 const createSchedule = async () => {
   console.log('Create:', schedule.value)
-  try {
-    const formData = {
+  let formattedDate = []
+  schedule.value.datetime_schedule.forEach(element => {
+    formattedDate.push(dayjs(element).format('YYYY-MM-DD HH:mm:ss'))
+  })
+  const formData = {
       class_id: schedule.value.class_id,
       trainer_id: schedule.value.trainer_id,
-      datetime_schedule: dayjs(schedule.value.datetime_schedule).format('YYYY-MM-DD HH:mm:ss'),
+      datetime_schedule: formattedDate,
     }
+  console.log('Create:', JSON.stringify(formData))
+  // try {
+  //   const formData = {
+  //     class_id: schedule.value.class_id,
+  //     trainer_id: schedule.value.trainer_id,
+  //     datetime_schedule: dayjs(schedule.value.datetime_schedule).format('YYYY-MM-DD HH:mm:ss'),
+  //   }
 
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'schedule', formData)
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Berhasil membuat jadwal baru',
-      life: 4000
-    })
-    isLoading.value = false
-    router.push({ name: 'ScheduleList' })
-  } catch (e) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan jadwal',
-      life: 4000
-    })
-    isLoading.value = false
-  }
+  //   await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'schedule', formData)
+  //   toast.add({
+  //     severity: 'success',
+  //     summary: 'Success',
+  //     detail: 'Berhasil membuat jadwal baru',
+  //     life: 4000
+  //   })
+  //   isLoading.value = false
+  //   router.push({ name: 'ScheduleList' })
+  // } catch (e) {
+  //   toast.add({
+  //     severity: 'error',
+  //     summary: 'Error',
+  //     detail: 'Terjadi kesalahan saat menyimpan jadwal',
+  //     life: 4000
+  //   })
+  //   isLoading.value = false
+  // }
 }
 </script>

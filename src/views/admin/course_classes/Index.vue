@@ -82,6 +82,7 @@ const buttonIsLoading = ref(false)
 const courseClasses = ref(null)
 
 const fetchCourseClasses = async () => {
+  isLoading.value = true
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'course-class')
     courseClasses.value = res.data.data
@@ -108,6 +109,7 @@ const deleteCourseClass = async (id) => {
           detail: 'Berhasil menonaktifkan data kelas',
           life: 4000
         })
+        await fetchCourseClasses()
       } catch (e) {
         toast.add({
           severity: 'error',

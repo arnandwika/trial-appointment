@@ -2,9 +2,26 @@
   <div>
     <!-- Header -->
     <div class="flex justify-content-between align-items-center mb-4">
-      <div>
-        <h2 class="text-2xl font-semibold">Order Approval</h2>
-        <p class="text-600">Approve member ordering your package</p>
+      <div class="mr-1">
+        <h2 class="text-2xl font-semibold">List Order</h2>
+        <p class="text-600">Approve and see all orders</p>
+      </div>
+
+      <div class="ml-1">
+        <Calendar
+          v-model="reportDate"
+          dateFormat="dd-mm-yy"
+          :maxDate="dateNow"
+          class="mr-2 w-7 md:w-auto"
+        />
+        <Button
+          :loading="buttonIsLoading"
+          :disabled="!reportDate"
+          icon="pi pi-file"
+          severity="success"
+          label="Download Report"
+          @click="downloadReport()"
+        />
       </div>
     </div>
 
@@ -44,6 +61,7 @@ import { useAlert } from '@/composables/useAlert'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
+import Calendar from 'primevue/calendar'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
 
@@ -55,6 +73,11 @@ const store = useStore()
 const isLoading = ref(true)
 const buttonIsLoading = ref(false)
 const orders = ref(null)
+const reportDate = ref(null)
+
+const downloadReport = async () => {
+
+}
 
 const fetchOrders = async () => {
   try {
