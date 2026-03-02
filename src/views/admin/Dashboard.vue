@@ -11,21 +11,21 @@
       <div class="col-12 md:col-6 lg:col-3">
         <div class="p-4 border-round surface-card shadow-2">
           <div class="text-500 mb-2">Total Courses</div>
-          <div class="text-3xl font-bold">{{ stats.totalCourses }}</div>
+          <div class="text-3xl font-bold">{{ totalCourseClass }}</div>
         </div>
       </div>
 
       <div class="col-12 md:col-6 lg:col-3">
         <div class="p-4 border-round surface-card shadow-2">
           <div class="text-500 mb-2">Total Schedules</div>
-          <div class="text-3xl font-bold">{{ stats.totalSchedules }}</div>
+          <div class="text-3xl font-bold">{{ totalSchedule }}</div>
         </div>
       </div>
 
       <div class="col-12 md:col-6 lg:col-3">
         <div class="p-4 border-round surface-card shadow-2">
           <div class="text-500 mb-2">Total Packages</div>
-          <div class="text-3xl font-bold">{{ stats.totalPackages }}</div>
+          <div class="text-3xl font-bold">{{ totalPackage }}</div>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
         <div class="p-4 border-round surface-card shadow-2">
           <div class="text-500 mb-2">Active Orders</div>
           <div class="text-3xl font-bold text-primary">
-            {{ stats.activeOrders }}
+            {{ activeOrders }}
           </div>
         </div>
       </div>
@@ -50,14 +50,15 @@
           </div>
 
           <DataTable
-            :value="upcomingClasses"
+            :value="upcomingSchedules"
             responsiveLayout="scroll"
-            :rows="5"
+            :rows="2"
           >
-            <Column field="name" header="Class" />
-            <Column field="instructor" header="Instructor" />
-            <Column field="time" header="Time" />
-            <Column field="remaining" header="Remaining Slots" />
+            <Column field="datetime_schedule" header="Date & Time" />
+            <Column field="course_class.name" header="Class Name" />
+            <Column field="trainer.name" header="Trainer Name" />
+            <Column field="course_class.class_capacity" header="Class Capacity" />
+            <Column field="used_capacity" header="Used Capacity" />
           </DataTable>
         </div>
       </div>
@@ -72,12 +73,12 @@
           <DataTable
             :value="recentOrders"
             responsiveLayout="scroll"
-            :rows="5"
+            :rows="2"
           >
-            <Column field="order_no" header="Order No" />
-            <Column field="user" header="User" />
-            <Column field="package" header="Package" />
-            <Column field="status" header="Status" />
+            <Column field="order_no" header="Order Code" />
+            <Column field="user_name" header="Member Name" />
+            <Column field="total_amount" header="Amount" />
+            <Column field="order_date" header="Order Date" />
           </DataTable>
         </div>
       </div>
@@ -99,42 +100,31 @@ const router = useRouter()
 const toast = useToast()
 const store = useStore()
 
-const stats = ref({
-  totalCourses: 12,
-  totalSchedules: 45,
-  totalPackages: 8,
-  activeOrders: 21
-})
+const isLoading = ref(true)
 
-const upcomingClasses = ref([
-  {
-    name: 'Morning Pilates',
-    instructor: 'Sarah',
-    time: '08:00 AM',
-    remaining: 4
-  },
-  {
-    name: 'Yoga Flow',
-    instructor: 'Daniel',
-    time: '10:00 AM',
-    remaining: 6
-  }
-])
+const totalCourseClass = ref(null)
+const totalSchedule = ref(null)
+const totalPackage = ref(null)
+const activeOrders = ref(null)
 
-const recentOrders = ref([
-  {
-    order_no: 'ORD-001',
-    user: 'John Doe',
-    package: '10 Class Package',
-    status: 'Active'
-  },
-  {
-    order_no: 'ORD-002',
-    user: 'Jane Smith',
-    package: 'Unlimited Monthly',
-    status: 'Pending'
+const upcomingSchedules = ref([])
+
+const recentOrders = ref([])
+
+const fetchDashboard = async () => {
+  isLoading.value = true
+  try {
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'dashboard')
+    totalCourseClass.value = res.data.data.total_course_class
+    totalPackage.value = res.data.data.total_package
+    totalSchedule.value = res.data.data.total_schedule
+    activeOrders.value = res.data.data.active_orders
+    upcomingSchedules.value = res.data.data.upcoming_schedules
+    recentOrders.value = res.data.data.recent_orders
+  } finally {
+    isLoading.value = false
   }
-])
+}
 
 onMounted(async () => {
   try {
@@ -163,5 +153,6 @@ onMounted(async () => {
     router.push('/')
   }
   // TODO: call API here
+  await fetchDashboard()
 })
 </script>

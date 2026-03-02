@@ -41,12 +41,14 @@
       <Column field="total_amount" header="Amount" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="order_date" header="Order Date" :headerStyle="{ justifyContent: 'center' }" />
 
-      <Column header="Actions" :headerStyle="{ display: 'flex', justifyContent: 'center' }" :bodyStyle="{ display: 'flex', justifyContent: 'center' }">
+      <Column header="Actions" :headerStyle="{ justifyContent: 'center' }">
         <template #body="slotProps">
           <Button
+            :disabled="slotProps.data.status == 'active'"
             :loading="buttonIsLoading"
-            icon="pi pi-trash"
-            label="APPROVE"
+            :label="slotProps.data.status == 'active' ? 'APPROVED' : 'APPROVE'"
+            size="small"
+            :text="slotProps.data.status == 'active'"
             @click="approveOrder(slotProps.data.id)"
           />
         </template>
@@ -95,8 +97,12 @@ const approveOrder = async (id) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
-        await axios.delete(
-          process.env.VUE_APP_APPOINTMENT_API + 'SESUAIKAN/' + id
+        const formData = {
+          id: id,
+          status: 'active'
+        }
+        await axios.patch(
+          process.env.VUE_APP_APPOINTMENT_API + 'orders/' + id, formData
         )
         toast.add({
           severity: 'success',

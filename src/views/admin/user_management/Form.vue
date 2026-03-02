@@ -1,40 +1,69 @@
 <template>
   <div>
-    <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} Package</h2>
+    <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} User</h2>
 
     <div class="surface-card p-4 border-round shadow-2">
       <div class="grid formgrid p-fluid">
 
         <div class="field col-8">
-          <label>Package Title</label>
-          <InputText v-model="PACKAGE.title" />
+          <label>Name</label>
+          <InputText v-model="user.name" />
         </div>
 
-        <div class="field col-12 md:col-6">
-          <label>Course Class</label>
+        <div class="field col-8">
+          <label>Role</label>
           <Dropdown
-            v-model="PACKAGE.class_id"
-            :options="courseClasses"
+            v-model="user.role"
+            :options="roles"
             optionLabel="name"
-            optionValue="id"
-            placeholder="Select Course Class"
+            optionValue="value"
+            placeholder="Select Role"
           />
         </div>
 
         <div class="field col-8">
-          <label>Price</label>
-          <InputNumber v-model="PACKAGE.price" />
+          <label>Phone Number</label>
+          <InputText v-model="user.phone_number" />
         </div>
 
         <div class="field col-8">
-          <label>Quota</label>
-          <InputNumber v-model="PACKAGE.quota" />
+          <label>Email</label>
+          <InputText v-model="user.email" />
         </div>
 
         <!-- Description -->
-        <div class="field col-12">
-          <label>Description</label>
-          <Textarea v-model="PACKAGE.description" rows="3" />
+        <div class="field col-8">
+          <label>Gender</label>
+          <Dropdown
+            v-model="user.gender"
+            :options="genders"
+            optionLabel="name"
+            optionValue="value"
+            placeholder="Select Gender"
+          />
+        </div>
+
+        <div class="field col-8">
+          <label>Password</label>
+          <Password
+            v-model="user.password"
+            toggleMask
+            :feedback="false"
+            class="w-full"
+          />
+        </div>
+
+        <div class="field col-8">
+          <label>Confirm Password</label>
+          <Password
+            v-model="user.confirm_password"
+            toggleMask
+            :feedback="false"
+            class="w-full"
+          />
+          <small v-if="passwordMismatch" class="p-error">
+            Password does not match
+          </small>
         </div>
 
         <!-- Active -->
@@ -58,7 +87,7 @@
           size="small"
           label="Save"
           icon="pi pi-check"
-          @click="id ? updatePackage() : createPackage()"
+          @click="id ? updateUser() : createUser()"
         />
       </div>
     </div>
@@ -66,12 +95,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
 // import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
@@ -83,34 +110,53 @@ const router = useRouter()
 const toast = useToast()
 const store = useStore()
 
-const PACKAGE = ref({
+const user = ref({
   id: null,
-  title: null,
-  class_id: null,
-  price: null,
-  quota: null,
-  description: null,
-  is_active: false
+  name: null,
+  role: null,
+  phone_number: null,
+  email: null,
+  gender: null,
+  password: null,
+  confirm_password: null,
 })
 const routingTo = ref(null)
 const id = ref(null)
 const isLoading = ref(true)
 
-const courseClasses = ref(null)
-
-const fetchCourseClasses = async () => {
-  try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'course-class')
-    courseClasses.value = res.data.data
-  } finally {
-    isLoading.value = false
+const roles = ref([
+  {
+    value: 'member',
+    name: 'Member'
+  },
+  {
+    value: 'admin',
+    name: 'Admin'
   }
-}
+])
 
-const getPackage = async () => {
+const genders = ref([
+  {
+    value: 'male',
+    name: 'Male'
+  },
+  {
+    value: 'female',
+    name: 'Female'
+  }
+])
+
+const passwordMismatch = computed(() => {
+  return (
+    user.value.confirm_password &&
+    user.value.password !== user.value.confirm_password
+  )
+})
+
+const getUser = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'package/' + id.value)
-    PACKAGE.value = res.data.data
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'user/' + id.value)
+    user.value = res.data.data
   } finally {
     isLoading.value = false
   }
@@ -143,8 +189,6 @@ onMounted(async () => {
     router.push('/')
   }
 
-  await fetchCourseClasses()
-
   id.value = route.params.id
   routingTo.value = route.params.routingTo == 'create' ? 'Create' : 'Update'
 
@@ -152,69 +196,72 @@ onMounted(async () => {
 
   // Replace with API call
   if (id.value) {
-    await getPackage()
+    await getUser()
   } else {
     isLoading.value = false
   }
 })
 
-const updatePackage = async () => {
-  console.log('Update:', PACKAGE.value)
+const updateUser = async () => {
+  console.log('Update:', user.value)
+  if (passwordMismatch.value) return
   try {
     const formData = {
-      id: PACKAGE.value.id,
-      title: PACKAGE.value.title,
-      class_id: PACKAGE.value.class_id,
-      price: PACKAGE.value.price,
-      quota: PACKAGE.value.quota,
-      description: PACKAGE.value.description
+      name: user.value.name,
+      role: user.value.role,
+      phone_number: user.value.phone_number,
+      gender: user.value.gender,
+      email: user.value.email,
+      password: user.value.password
     }
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'package', formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user/' + user.value.id, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah paket',
+      detail: 'Berhasil mengubah user',
       life: 4000
     })
     isLoading.value = false
-    router.push({ name: 'PackageList' })
+    router.push({ name: 'UserList' })
   } catch (e) {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah paket',
+      detail: 'Terjadi kesalahan saat mengubah user',
       life: 4000
     })
     isLoading.value = false
   }
 }
 
-const createPackage = async () => {
-  console.log('Create:', PACKAGE.value)
+const createUser = async () => {
+  console.log('Create:', user.value)
+  if (passwordMismatch.value) return
   try {
     const formData = {
-      title: PACKAGE.value.title,
-      class_id: PACKAGE.value.class_id,
-      price: PACKAGE.value.price,
-      quota: PACKAGE.value.quota,
-      description: PACKAGE.value.description
+      name: user.value.name,
+      role: user.value.role,
+      phone_number: user.value.phone_number,
+      gender: user.value.gender,
+      email: user.value.email,
+      password: user.value.password
     }
 
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'package', formData)
+    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'user', formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat paket baru',
+      detail: 'Berhasil membuat user baru',
       life: 4000
     })
     isLoading.value = false
-    router.push({ name: 'PackageList' })
+    router.push({ name: 'UserList' })
   } catch (e) {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan paket',
+      detail: 'Terjadi kesalahan saat menyimpan user',
       life: 4000
     })
     isLoading.value = false

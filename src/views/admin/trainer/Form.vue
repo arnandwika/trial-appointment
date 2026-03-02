@@ -1,14 +1,19 @@
 <template>
   <div>
-    <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} Schedule</h2>
+    <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} Trainer</h2>
 
     <div class="surface-card p-4 border-round shadow-2">
       <div class="grid formgrid p-fluid">
 
-        <div class="field col-12 md:col-6">
-          <label>Course Class</label>
+        <div class="field col-8">
+          <label>Name</label>
+          <InputText v-model="trainer.name" />
+        </div>
+
+        <div class="field col-8">
+          <label>Class Name</label>
           <Dropdown
-            v-model="schedule.class_id"
+            v-model="trainer.class_id"
             :options="courseClasses"
             optionLabel="name"
             optionValue="id"
@@ -16,35 +21,27 @@
           />
         </div>
 
-        <div class="field col-12 md:col-6">
-          <label>Trainer</label>
+        <div class="field col-8">
+          <label>Phone Number</label>
+          <InputText v-model="trainer.phone_number" />
+        </div>
+
+        <div class="field col-8">
+          <label>Email</label>
+          <InputText v-model="trainer.email" />
+        </div>
+
+        <!-- Description -->
+        <div class="field col-8">
+          <label>Gender</label>
           <Dropdown
-            v-model="schedule.trainer_id"
-            :options="trainer"
+            v-model="trainer.gender"
+            :options="genders"
             optionLabel="name"
-            optionValue="id"
-            placeholder="Select Trainer"
+            optionValue="value"
+            placeholder="Select Gender"
           />
         </div>
-
-        <div class="field col-12 md:col-6 flex flex-column gap-2">
-          <label for="schedule_at">Schedule At</label>
-          <Calendar
-            v-model="schedule.datetime_schedule"
-            showTime
-            hourFormat="24"
-            dateFormat="dd-mm-yy"
-            :selectionMode="schedule.id ? 'single' : 'multiple'"
-            :minDate="dateNow"
-            class="w-full"
-          />
-        </div>
-
-        <!-- Active -->
-        <!-- <div class="field col-12 md:col-6 flex align-items-center">
-          <Checkbox v-model="courseClass.is_active" binary />
-          <label class="ml-2">Active</label>
-        </div> -->
 
       </div>
 
@@ -61,7 +58,7 @@
           size="small"
           label="Save"
           icon="pi pi-check"
-          @click="id ? updateSchedule() : createSchedule()"
+          @click="id ? updateTrainer() : createTrainer()"
         />
       </div>
     </div>
@@ -72,33 +69,41 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 // import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
-import Calendar from 'primevue/calendar'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
-import dayjs from 'dayjs'
-dayjs.locale('id')
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const store = useStore()
-const dateNow = ref(new Date());
 
-const schedule = ref({
+const trainer = ref({
   id: null,
+  name: null,
   class_id: null,
-  trainer_id: null,
-  datetime_schedule: []
+  phone_number: null,
+  email: null,
+  gender: null,
 })
 const routingTo = ref(null)
 const id = ref(null)
 const isLoading = ref(true)
-
 const courseClasses = ref(null)
-const trainer = ref(null)
+
+const genders = ref([
+  {
+    value: 'male',
+    name: 'Male'
+  },
+  {
+    value: 'female',
+    name: 'Female'
+  }
+])
 
 const fetchCourseClasses = async () => {
   try {
@@ -109,19 +114,10 @@ const fetchCourseClasses = async () => {
   }
 }
 
-const fetchTrainer = async () => {
+const getTrainer = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'trainer')
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + id.value)
     trainer.value = res.data.data
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const getSchedule = async () => {
-  try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule/' + id.value)
-    schedule.value = res.data.data
   } finally {
     isLoading.value = false
   }
@@ -155,7 +151,6 @@ onMounted(async () => {
   }
 
   await fetchCourseClasses()
-  await fetchTrainer()
 
   id.value = route.params.id
   routingTo.value = route.params.routingTo == 'create' ? 'Create' : 'Update'
@@ -164,68 +159,68 @@ onMounted(async () => {
 
   // Replace with API call
   if (id.value) {
-    await getSchedule()
+    await getTrainer()
   } else {
     isLoading.value = false
   }
 })
 
-const updateSchedule = async () => {
-  console.log('Update:', schedule.value)
+const updateTrainer = async () => {
+  console.log('Update:', trainer.value)
   try {
     const formData = {
-      class_id: schedule.value.class_id,
-      trainer_id: schedule.value.trainer_id,
-      datetime_schedule: dayjs(schedule.value.datetime_schedule).format('YYYY-MM-DD HH:mm:ss'),
+      name: trainer.value.name,
+      class_id: trainer.value.class_id,
+      phone_number: trainer.value.phone_number,
+      gender: trainer.value.gender,
+      email: trainer.value.email,
     }
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'schedule/' + schedule.value.id, formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + trainer.value.id, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah jadwal',
+      detail: 'Berhasil mengubah trainer',
       life: 4000
     })
     isLoading.value = false
-    router.push({ name: 'ScheduleList' })
+    router.push({ name: 'TrainerList' })
   } catch (e) {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah jadwal',
+      detail: 'Terjadi kesalahan saat mengubah trainer',
       life: 4000
     })
     isLoading.value = false
   }
 }
 
-const createSchedule = async () => {
-  console.log('Create:', schedule.value)
-  let formattedDate = []
-  schedule.value.datetime_schedule.forEach(element => {
-    formattedDate.push(dayjs(element).format('YYYY-MM-DD HH:mm:ss'))
-  })
+const createTrainer = async () => {
+  console.log('Create:', trainer.value)
   try {
     const formData = {
-      class_id: schedule.value.class_id,
-      trainer_id: schedule.value.trainer_id,
-      datetime_schedule: formattedDate,
+      name: trainer.value.name,
+      class_id: trainer.value.class_id,
+      phone_number: trainer.value.phone_number,
+      gender: trainer.value.gender,
+      email: trainer.value.email,
     }
 
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'schedule', formData)
+    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'trainer', formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat jadwal baru',
+      detail: 'Berhasil membuat trainer baru',
       life: 4000
     })
     isLoading.value = false
-    router.push({ name: 'ScheduleList' })
+    router.push({ name: 'TrainerList' })
   } catch (e) {
     toast.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan jadwal',
+      detail: 'Terjadi kesalahan saat menyimpan trainer',
       life: 4000
     })
     isLoading.value = false

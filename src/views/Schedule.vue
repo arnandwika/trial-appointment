@@ -234,6 +234,8 @@ const validationBook = async (schedule) => {
   if (!store.getters.user) {
     openModal()
   } else {
+    let canBook = false
+    let orderDetailId = null
     loading.value = true
     try {
       const res = await axios.get(
@@ -247,7 +249,7 @@ const validationBook = async (schedule) => {
 
       store.dispatch('login', res.data)
 
-      book(schedule)
+      canBook = true
     } catch (error) {
       if (localStorage.token) {
         toast.add({
@@ -257,31 +259,61 @@ const validationBook = async (schedule) => {
           life: 4000
         })
       }
+      canBook = false
       localStorage.removeItem('token')
       store.dispatch('logout')
       loading.value = false
       openModal()
     }
 
-    try {
-      const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
-      store.dispatch('storeUserTransaction', res2.data.data)
-    } catch (error) {
-      console.log(error)
-    }
+    if (canBook) {
+      canBook = false
 
-    // animateToCart(event.target)
+      try {
+        const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+        store.dispatch('storeUserTransaction', res2.data.data)
+
+        store.getters.userTransaction.forEach(element1 => {
+          element1.order_details.forEach(element2 => {
+            if (element2.class_id == schedule.course_class.id) {
+              canBook = true
+              orderDetailId = element2.id
+            }
+          })
+        })
+
+        if (!canBook) {
+          toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Jadwal yang anda pilih tidak termasuk di paket yang anda punya',
+            life: 4000
+          })
+        }
+      } catch (error) {
+        console.log(error)
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Anda belum memiliki paket',
+          life: 4000
+        })
+        canBook = false
+      }
+
+      if (canBook) book(schedule, orderDetailId)
+    }
   }
 }
 
-const book = async (schedule) => {
+const book = async (schedule, orderDetailId) => {
   if (store.getters.userTransaction) {
     try {
       await axios.post(
         process.env.VUE_APP_APPOINTMENT_API + 'booking',
         {
           user_id: store.getters.user.id,
-          order_detail_id: store.getters.userTransaction[0].order_details[0].id,
+          order_detail_id: orderDetailId,
           class_id: schedule.course_class.id,
           trainer_id: schedule.trainer.id,
           schedule_id: schedule.id,

@@ -243,11 +243,13 @@ const removeFromCart = (id) => {
 }
 
 const checkout = async () => {
+  console.log("masuk checkout")
   loading.value = true
   let total_amount = 0
   cart.value.forEach(element => {
     total_amount += parseInt(element.price)
   })
+  console.log("hitung cart")
   try {
     await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'orders', {
       order_details: cart.value.map(i => ({
@@ -262,6 +264,7 @@ const checkout = async () => {
       user_name: store.getters.user.name,
       total_amount: total_amount
     })
+    console.log("sudah create")
 
     cart.value = []
     showCart.value = false

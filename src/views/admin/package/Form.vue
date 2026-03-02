@@ -162,7 +162,6 @@ const updatePackage = async () => {
   console.log('Update:', PACKAGE.value)
   try {
     const formData = {
-      id: PACKAGE.value.id,
       title: PACKAGE.value.title,
       class_id: PACKAGE.value.class_id,
       price: PACKAGE.value.price,
@@ -170,7 +169,7 @@ const updatePackage = async () => {
       description: PACKAGE.value.description
     }
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'package', formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'package/' + PACKAGE.value.id, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',

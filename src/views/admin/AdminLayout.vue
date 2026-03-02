@@ -69,6 +69,7 @@
   { name: 'CourseList', label: 'Course Classes', to: { name: 'CourseList' }, icon: 'pi pi-book' },
   { name: 'ScheduleList', label: 'Schedules', to: { name: 'ScheduleList' }, icon: 'pi pi-calendar' },
   { name: 'PackageList', label: 'Packages', to: { name: 'PackageList' }, icon: 'pi pi-box' },
+  { name: 'TrainerList', label: 'Trainer', to: { name: 'TrainerList' }, icon: 'pi pi-user' },
   { name: 'ListOrder', label: 'List Order', to: { name: 'ListOrder' }, icon: 'pi pi-check-circle' }
 ]
 </script>

@@ -1,44 +1,35 @@
 <template>
-  <div class="w-full overflow-x-auto">
+  <div>
     <!-- Header -->
     <div class="flex justify-content-between align-items-center mb-4">
       <div>
-        <h2 class="text-2xl font-semibold">Course Classes</h2>
-        <p class="text-600">Manage your studio course classes</p>
+        <h2 class="text-2xl font-semibold">Trainer</h2>
+        <p class="text-600">Manage your trainer account</p>
       </div>
 
       <Button
         :loading="buttonIsLoading"
         size="small"
-        label="Create Course Class"
+        label="Create Trainer"
         icon="pi pi-plus"
-        @click="$router.push({ name: 'CourseForm', params: {routingTo: 'create'} })"
+        @click="$router.push({ name: 'TrainerForm', params: {routingTo: 'create'} })"
       />
     </div>
 
     <!-- Table -->
     <DataTable
-      :value="courseClasses"
+      :value="trainers"
       :loading="isLoading"
       paginator
       :rows="10"
       responsiveLayout="scroll"
-      scrollable
-      scrollHeight="flex"
-      class="w-full shadow-1"
+      class="shadow-1"
     >
       <Column field="name" header="Name" :headerStyle="{ justifyContent: 'center' }" />
-      <Column :style="{ maxWidth: '250px', minWidth: '150px' }" field="image_url" header="Image" :headerStyle="{ justifyContent: 'center' }">
-        <template #body="slotProps">
-          <img
-            :src="apiStorage + slotProps.data.image_url"
-            alt=""
-            class="w-full h-8rem object-fit-cover border-round-top"
-          />
-        </template>
-      </Column>
-      <Column field="description" header="Description" :headerStyle="{ justifyContent: 'center' }" />
-      <Column field="class_capacity" header="Capacity" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="course_class.name" header="Class Name" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="phone_number" header="Phone Number" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="email" header="Email" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="gender" header="Gender" :headerStyle="{ justifyContent: 'center' }" />
 
       <Column header="Status" :headerStyle="{ justifyContent: 'center' }">
         <template #body="slotProps">
@@ -49,20 +40,20 @@
         </template>
       </Column>
 
-      <Column :style="{ minWidth: '140px' }" header="Actions" :headerStyle="{ display: 'flex', justifyContent: 'center' }">
+      <Column header="Actions" :headerStyle="{ display: 'flex', justifyContent: 'center' }" :bodyStyle="{ display: 'flex', justifyContent: 'center' }">
         <template #body="slotProps">
           <Button
             :loading="buttonIsLoading"
             icon="pi pi-pencil"
             text
-            @click="editCourseClass(slotProps.data.id)"
+            @click="editTrainer(slotProps.data.id)"
           />
           <Button
             :loading="buttonIsLoading"
             icon="pi pi-trash"
             text
             severity="danger"
-            @click="deleteCourseClass(slotProps.data.id)"
+            @click="deleteTrainer(slotProps.data.id)"
           />
         </template>
       </Column>
@@ -89,43 +80,40 @@ const store = useStore()
 
 const isLoading = ref(true)
 const buttonIsLoading = ref(false)
-const courseClasses = ref(null)
-const apiStorage = ref(null)
+const trainers = ref(null)
 
-const fetchCourseClasses = async () => {
-  isLoading.value = true
+const fetchTrainers = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'course-class')
-    courseClasses.value = res.data.data
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'trainer')
+    trainers.value = res.data.data
   } finally {
     isLoading.value = false
   }
 }
 
-const editCourseClass = (id) => {
-  router.push({ name: 'CourseForm', params: { routingTo: "update", id: id } })
+const editTrainer = (id) => {
+  router.push({ name: 'TrainerForm', params: { routingTo: "update", id: id } })
 }
 
-const deleteCourseClass = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan kelas ini?').then (async (result) => {
+const deleteTrainer = async (id) => {
+  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan trainer ini?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
         await axios.delete(
-          process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + id
+          process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + id
         )
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data kelas',
+          detail: 'Berhasil menonaktifkan data trainer',
           life: 4000
         })
-        await fetchCourseClasses()
       } catch (e) {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan kelas',
+          detail: 'Terjadi kesalahan saat menonaktifkan trainer',
           life: 4000
         })
       }
@@ -135,7 +123,6 @@ const deleteCourseClass = async (id) => {
 }
 
 onMounted(async () => {
-  apiStorage.value = process.env.VUE_APP_APPOINTMENT_API_STORAGE
   try {
     const res = await axios.get(
       process.env.VUE_APP_APPOINTMENT_API + 'user',
@@ -161,6 +148,6 @@ onMounted(async () => {
     store.dispatch('logout')
     router.push('/')
   }
-  await fetchCourseClasses()
+  await fetchTrainers()
 })
 </script>

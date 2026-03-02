@@ -16,12 +16,12 @@
           <label>Image</label>
           <!-- Image Preview -->
           <div
-            v-if="courseClass.preview_url"
+            v-if="courseClass.preview_url || courseClass.image_file"
             class="mb-3 border-round overflow-hidden"
             style="max-width: 300px"
           >
             <img
-              :src="courseClass.preview_url"
+              :src="courseClass.image_name ? courseClass.preview_url : apiStorage + courseClass.image_file"
               class="w-full border-round"
               style="object-fit: cover; max-height: 200px"
             />
@@ -125,18 +125,20 @@ const courseClass = ref({
 const routingTo = ref(null)
 const id = ref(null)
 const isLoading = ref(true)
+const apiStorage = ref(null)
 
 const getCourseClass = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + id.value)
     courseClass.value = res.data.data
-    courseClass.value.preview_url = URL.createObjectURL(courseClass.value.image_file)
+    courseClass.value.image_file = courseClass.value.image_url
   } finally {
     isLoading.value = false
   }
 }
 
 onMounted(async () => {
+  apiStorage.value = process.env.VUE_APP_APPOINTMENT_API_STORAGE
   try {
     const res = await axios.get(
       process.env.VUE_APP_APPOINTMENT_API + 'user',
@@ -198,13 +200,12 @@ const updateCourseClass = async () => {
   try {
     const formData = new FormData()
 
-    formData.append('id', courseClass.value.id)
     formData.append('name', courseClass.value.name)
     if (courseClass.value.image_name) formData.append('image_file', courseClass.value.image_file)
     formData.append('description', courseClass.value.description)
     formData.append('class_capacity', courseClass.value.class_capacity)
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'course-class', formData, {
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + courseClass.value.id, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     toast.add({

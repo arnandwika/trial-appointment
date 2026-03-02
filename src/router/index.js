@@ -26,6 +26,9 @@ import PackageForm from '@/views/admin/package/Form.vue'
 import UserList from '@/views/admin/user_management/Index.vue'
 import UserForm from '@/views/admin/user_management/Form.vue'
 
+import TrainerList from '@/views/admin/trainer/Index.vue'
+import TrainerForm from '@/views/admin/trainer/Form.vue'
+
 // const store = useStore()
 // const toast = useToast()
 
@@ -111,6 +114,16 @@ const routes = [
         path: 'users/:routingTo/:id?',
         name: 'UserForm',
         component: UserForm
+      },
+      {
+        path: 'trainers',
+        name: 'TrainerList',
+        component: TrainerList
+      },
+      {
+        path: 'trainers/:routingTo/:id?',
+        name: 'TrainerForm',
+        component: TrainerForm
       },
     ]
   }
