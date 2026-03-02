@@ -8,6 +8,7 @@ import Packages from '@/views/Packages.vue'
 import CourseClasses from '@/views/CourseClasses.vue'
 import Schedule from '@/views/Schedule.vue'
 import MyOrder from '@/views/MyOrder.vue'
+import ChangePassword from '@/views/ChangePassword.vue'
 
 import AdminDashboard from '@/views/admin/Dashboard.vue'
 import AdminLayout from '@/views/admin/AdminLayout.vue'
@@ -57,6 +58,11 @@ const routes = [
     path: '/my-order',
     name: 'my-order',
     component: MyOrder
+  },
+  {
+    path: '/change-password',
+    name: 'change-password',
+    component: ChangePassword
   },
   {
     path: '/admin',

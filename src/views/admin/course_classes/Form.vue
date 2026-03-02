@@ -204,10 +204,9 @@ const updateCourseClass = async () => {
     if (courseClass.value.image_name) formData.append('image_file', courseClass.value.image_file)
     formData.append('description', courseClass.value.description)
     formData.append('class_capacity', courseClass.value.class_capacity)
+    formData.append("_method", "PATCH")
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + courseClass.value.id, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + courseClass.value.id, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',

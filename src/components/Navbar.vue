@@ -174,6 +174,11 @@ const items = ref([
         label: 'My Order',
         icon: 'pi pi-receipt',
         command: () => router.push('/my-order')
+      },
+      {
+        label: 'Change Password',
+        icon: 'pi pi-lock',
+        command: () => router.push('/change-password')
       }
     ]
   },

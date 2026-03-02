@@ -43,7 +43,7 @@
           />
         </div>
 
-        <div class="field col-8">
+        <div v-if="!user.id" class="field col-8">
           <label>Password</label>
           <Password
             v-model="user.password"
@@ -53,7 +53,7 @@
           />
         </div>
 
-        <div class="field col-8">
+        <div v-if="!user.id" class="field col-8">
           <label>Confirm Password</label>
           <Password
             v-model="user.confirm_password"
@@ -87,7 +87,15 @@
           size="small"
           label="Save"
           icon="pi pi-check"
-          @click="id ? updateUser() : createUser()"
+          @click="id ? updateUser(false) : createUser()"
+        />
+        <Button
+          v-if="id"
+          :loading="isLoading"
+          size="small"
+          severity="warning"
+          label="Reset Password"
+          @click="updateUser(true)"
         />
       </div>
     </div>
@@ -155,7 +163,7 @@ const passwordMismatch = computed(() => {
 
 const getUser = async () => {
   try {
-    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'user/' + id.value)
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + id.value)
     user.value = res.data.data
   } finally {
     isLoading.value = false
@@ -202,24 +210,30 @@ onMounted(async () => {
   }
 })
 
-const updateUser = async () => {
+const updateUser = async (changePassword) => {
   console.log('Update:', user.value)
-  if (passwordMismatch.value) return
+  if (passwordMismatch.value && changePassword) return
   try {
-    const formData = {
-      name: user.value.name,
-      role: user.value.role,
-      phone_number: user.value.phone_number,
-      gender: user.value.gender,
-      email: user.value.email,
-      password: user.value.password
+    let formData = {}
+    if (changePassword) {
+      formData = {
+        password: user.value.phone_number
+      }
+    } else {
+      formData = {
+        name: user.value.name,
+        role: user.value.role,
+        phone_number: user.value.phone_number,
+        gender: user.value.gender,
+        email: user.value.email,
+      }
     }
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user/' + user.value.id, formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + user.value.id, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah user',
+      detail: changePassword ? 'Berhasil reset password menjadi nomor HP' : 'Berhasil mengubah user',
       life: 4000
     })
     isLoading.value = false
@@ -248,7 +262,7 @@ const createUser = async () => {
       password: user.value.password
     }
 
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'user', formData)
+    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'user-management', formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
