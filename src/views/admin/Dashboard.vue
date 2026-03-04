@@ -55,10 +55,9 @@
             :rows="2"
           >
             <Column field="datetime_schedule" header="Date & Time" />
-            <Column field="course_class.name" header="Class Name" />
-            <Column field="trainer.name" header="Trainer Name" />
-            <Column field="course_class.class_capacity" header="Class Capacity" />
-            <Column field="used_capacity" header="Used Capacity" />
+            <Column field="class_name" header="Class Name" />
+            <Column field="trainer_name" header="Trainer Name" />
+            <Column field="remaining_slot" header="Remaining Slot" />
           </DataTable>
         </div>
       </div>
@@ -95,6 +94,7 @@ import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import dayjs from 'dayjs'
 
 const router = useRouter()
 const toast = useToast()
@@ -119,7 +119,13 @@ const fetchDashboard = async () => {
     totalPackage.value = res.data.data.total_package
     totalSchedule.value = res.data.data.total_schedule
     activeOrders.value = res.data.data.active_orders
+    res.data.data.upcoming_schedules.forEach(element => {
+      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YY HH:MM')
+    });
     upcomingSchedules.value = res.data.data.upcoming_schedules
+    res.data.data.recent_orders.forEach(element => {
+      element.order_date = dayjs(element.order_date).format('DD-MM-YY HH:MM')
+    })
     recentOrders.value = res.data.data.recent_orders
   } finally {
     isLoading.value = false

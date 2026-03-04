@@ -68,6 +68,7 @@ import Button from 'primevue/button'
 import Calendar from 'primevue/calendar'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
+import dayjs from 'dayjs'
 
 const router = useRouter()
 const toast = useToast()
@@ -80,12 +81,43 @@ const orders = ref(null)
 const reportDate = ref(null)
 
 const downloadReport = async () => {
-  console.log(reportDate.value)
+  try {
+    const response = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/report/excel', {
+      params: {
+        date: reportDate.value
+      },
+      responseType: "blob"
+    })
+
+    const url = window.URL.createObjectURL(
+      new Blob([response.data])
+    );
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "report.xlsx");
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } finally {
+    toast.add({
+      severity: 'error',
+      summary: 'Server Error',
+      detail: 'Terjadi kesalahan saat download report',
+      life: 4000
+    })
+    isLoading.value = false
+  }
 }
 
 const fetchOrders = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders')
+    res.data.data.forEach(element => {
+      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:MM')
+    })
     orders.value = res.data.data
   } finally {
     isLoading.value = false

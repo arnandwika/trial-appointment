@@ -72,6 +72,7 @@ import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
+import dayjs from 'dayjs'
 
 const router = useRouter()
 const toast = useToast()
@@ -86,6 +87,9 @@ const fetchSchedules = async () => {
   isLoading.value = true
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule')
+    res.data.data.forEach(element => {
+      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:MM')
+    })
     schedules.value = res.data.data
   } finally {
     isLoading.value = false
