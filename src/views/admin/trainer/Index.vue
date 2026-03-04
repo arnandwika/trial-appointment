@@ -26,7 +26,7 @@
       class="shadow-1"
     >
       <Column field="name" header="Name" :headerStyle="{ justifyContent: 'center' }" />
-      <Column field="course_class.name" header="Class Name" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="course_classes.name" header="Class Name" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="phone_number" header="Phone Number" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="email" header="Email" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="gender" header="Gender" :headerStyle="{ justifyContent: 'center' }" />
