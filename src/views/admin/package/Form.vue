@@ -10,7 +10,7 @@
           <InputText v-model="PACKAGE.title" />
         </div>
 
-        <div class="field col-12 md:col-6">
+        <div class="field col-8">
           <label>Course Class</label>
           <Dropdown
             v-model="PACKAGE.class_id"

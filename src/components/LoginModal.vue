@@ -87,28 +87,11 @@
 </template>
 
 <script setup>
-import { Form, Field } from "vee-validate"
-import { defineRule } from "vee-validate"
-
 import { useLoginModal } from '@/composables/useLoginModal'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
-
-/* custom rules (since you don't use @vee-validate/rules) */
-
-defineRule("required", value => {
-  if (!value || !value.length) {
-    return "This field is required"
-  }
-  return true
-})
-
-defineRule("email", value => {
-  if (!value) return true
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || "Invalid email address"
-})
 
 const { showLogin, closeModal } = useLoginModal()
 

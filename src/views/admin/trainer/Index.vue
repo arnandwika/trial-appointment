@@ -40,7 +40,10 @@
         </template>
       </Column>
 
-      <Column header="Actions" :headerStyle="{ display: 'flex', justifyContent: 'center' }" :bodyStyle="{ display: 'flex', justifyContent: 'center' }">
+      <Column bodyStyle="width: 130px">
+        <template #header>
+          <div class="text-center w-full">Actions</div>
+        </template>
         <template #body="slotProps">
           <Button
             :loading="buttonIsLoading"
@@ -109,6 +112,7 @@ const deleteTrainer = async (id) => {
           detail: 'Trainer deactivated successfully',
           life: 4000
         })
+        await fetchTrainers()
       } catch (e) {
         toast.add({
           severity: 'error',

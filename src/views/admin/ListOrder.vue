@@ -41,14 +41,19 @@
       <Column field="total_amount" header="Amount" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="order_date" header="Order Date" :headerStyle="{ justifyContent: 'center' }" />
 
-      <Column header="Actions" :headerStyle="{ justifyContent: 'center' }">
+      <Column bodyStyle="width: 130px">
+        <template #header>
+          <div class="text-center w-full">Actions</div>
+        </template>
         <template #body="slotProps">
           <Button
             :disabled="slotProps.data.status == 'active'"
             :loading="buttonIsLoading"
             :label="slotProps.data.status == 'active' ? 'APPROVED' : 'APPROVE'"
             size="small"
+            aria-expanded="true"
             :text="slotProps.data.status == 'active'"
+            :class="slotProps.data.status == 'active' ? 'text-color-green w-full' : 'w-full'"
             @click="approveOrder(slotProps.data.id)"
           />
         </template>

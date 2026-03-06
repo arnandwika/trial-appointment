@@ -53,7 +53,6 @@
                 <ul class="text-sm pl-3 line-height-3">
                   <li>One time payment</li>
                   <li>{{ item.quota }} credit(s) for Appointments</li>
-                  <li>Location access</li>
                   <li>{{ item.description }}</li>
                 </ul>
               </template>
@@ -85,6 +84,7 @@
     <Dialog
       v-model:visible="showCart"
       modal
+      dismissableMask
       header="Your Cart"
       :style="{ width: '400px' }"
       :breakpoints="{
@@ -105,7 +105,7 @@
         <div>
             <strong>{{ item.title }}</strong>
             <div class="text-sm text-gray-500">
-              ${{ item.price }} × {{ item.qty }}
+              Rp{{ item.price }}
             </div>
           </div>
 
@@ -113,15 +113,19 @@
             icon="pi pi-trash"
             severity="danger"
             text
-            @click="removeFromCart(item.id)"
+            @click="removeFromCart(item)"
           />
         </div>
 
         <Divider />
+        <div>
+          <strong>Total </strong><br>
+          Rp{{ totalAmount }}
+        </div>
         <Button
           label="Checkout"
           icon="pi pi-check"
-          class="w-full"
+          class="w-full mt-4"
           :loading="loading"
           @click="checkout"
         />
@@ -147,6 +151,7 @@ const showCart = ref(false)
 const loading = ref(true)
 const store = useStore()
 const toast = useToast()
+const totalAmount = ref(0)
 
 const { openModal } = useLoginModal()
 const { success } = useAlert()
@@ -183,9 +188,15 @@ const addToCart = async (pkg) => {
       const existing = cart.value.find(i => i.id === pkg.id)
 
       if (existing) {
-        existing.qty++
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Package already in the cart',
+          life: 4000
+        })
       } else {
         cart.value.push({ ...pkg, qty: 1 })
+        totalAmount.value += parseInt(pkg.price)
       }
     } catch (error) {
       if (localStorage.token) {
@@ -238,8 +249,9 @@ const cartCount = computed(() =>
   cart.value.reduce((sum, i) => sum + i.qty, 0)
 )
 
-const removeFromCart = (id) => {
-  cart.value = cart.value.filter(i => i.id !== id)
+const removeFromCart = (item) => {
+  totalAmount.value -= parseInt(item.price)
+  cart.value = cart.value.filter(i => i.id !== item.id)
 }
 
 const checkout = async () => {
@@ -249,7 +261,7 @@ const checkout = async () => {
   cart.value.forEach(element => {
     total_amount += parseInt(element.price)
   })
-  console.log("hitung cart")
+  console.log("hitung cart ", total_amount)
   try {
     await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'orders', {
       order_details: cart.value.map(i => ({

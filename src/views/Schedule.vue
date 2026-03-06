@@ -251,6 +251,7 @@ const validationBook = async (schedule) => {
     openModal()
   } else {
     let canBook = false
+    let errorMessage = ''
     let orderDetailId = null
     loading.value = true
     try {
@@ -292,8 +293,12 @@ const validationBook = async (schedule) => {
         store.getters.userTransaction.forEach(element1 => {
           element1.order_details.forEach(element2 => {
             if (element2.class_id == schedule.course_class.id) {
-              canBook = true
-              orderDetailId = element2.id
+              if (element1.active) {
+                canBook = true
+                orderDetailId = element2.id
+              } else {
+                errorMessage = 'Your packages transaction not yet activated by Admin'
+              }
             }
           })
         })
@@ -302,7 +307,7 @@ const validationBook = async (schedule) => {
           toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Class schedule not included in your Packages',
+            detail: errorMessage ? errorMessage : 'Class schedule not included in your Packages',
             life: 4000
           })
         }
@@ -319,6 +324,7 @@ const validationBook = async (schedule) => {
 
       if (canBook) book(schedule, orderDetailId)
     }
+    loading.value = false
   }
 }
 
@@ -343,7 +349,7 @@ const book = async (schedule, orderDetailId) => {
         detail: 'Schedule booked',
         life: 4000
       })
-      loading.value = false
+      await fetchSchedule()
     } catch (e) {
       toast.add({
         severity: 'error',
@@ -351,8 +357,8 @@ const book = async (schedule, orderDetailId) => {
         detail: 'Schedule book error',
         life: 4000
       })
-      loading.value = false
     }
+    loading.value = false
   }
 }
 

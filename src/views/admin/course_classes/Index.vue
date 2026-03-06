@@ -49,7 +49,10 @@
         </template>
       </Column>
 
-      <Column :style="{ minWidth: '140px' }" header="Actions" :headerStyle="{ display: 'flex', justifyContent: 'center' }">
+      <Column bodyStyle="width: 130px">
+        <template #header>
+          <div class="text-center w-full">Actions</div>
+        </template>
         <template #body="slotProps">
           <Button
             :loading="buttonIsLoading"
