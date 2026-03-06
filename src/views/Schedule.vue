@@ -107,12 +107,12 @@
 
         <!-- Title -->
         <div class="text-xl font-semibold mb-2">
-          No classes are available at the moment.
+          No classes are available on {{ selectedDate }}
         </div>
 
         <!-- Description -->
         <div class="text-600 mb-4">
-          New sessions will be added soon.
+          New classes will be added soon.
         </div>
       </div>
 
@@ -148,7 +148,7 @@ const generateDates = () => {
 
   const temp = []
   let current = start
-  selectedDate.value = current.format('ddd, DD MMMM')
+  selectedDate.value = current.format('dddd, DD MMMM')
 
   dateSchedule.value = schedule.value.filter(item => item.datetime_schedule == selectedDate.value.iso)
 

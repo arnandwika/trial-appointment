@@ -54,19 +54,21 @@
           <div class="text-center w-full">Actions</div>
         </template>
         <template #body="slotProps">
-          <Button
-            :loading="buttonIsLoading"
-            icon="pi pi-pencil"
-            text
-            @click="editCourseClass(slotProps.data.id)"
-          />
-          <Button
-            :loading="buttonIsLoading"
-            icon="pi pi-trash"
-            text
-            severity="danger"
-            @click="deleteCourseClass(slotProps.data.id)"
-          />
+          <div class="flex justify-content-center gap-2">
+            <Button
+              :loading="buttonIsLoading"
+              icon="pi pi-pencil"
+              text
+              @click="editCourseClass(slotProps.data.id)"
+            />
+            <Button
+              :loading="buttonIsLoading"
+              icon="pi pi-trash"
+              text
+              severity="danger"
+              @click="deleteCourseClass(slotProps.data.id)"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>

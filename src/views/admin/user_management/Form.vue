@@ -2,108 +2,137 @@
   <div>
     <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} User</h2>
 
-    <div class="surface-card p-4 border-round shadow-2">
-      <div class="grid formgrid p-fluid">
+    <Form @submit="handleSubmit" validate-on-input :initial-values="id ? initialValues : undefined">
+      <div class="surface-card p-4 border-round shadow-2">
+        <div class="grid formgrid p-fluid">
 
-        <div class="field col-8">
-          <label>Name</label>
-          <InputText v-model="user.name" />
+          <div class="field col-8">
+            <label>Name</label>
+            <Field name="name" rules="required|alpha" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="name" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Role</label>
+            <Field name="role" rules="required" v-slot="{ field, errors }">
+              <Dropdown
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :options="roles"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Select Role"
+                :class="{ 'p-invalid': errors.length }"
+              />
+              <ErrorMessage name="role" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Phone Number</label>
+            <Field name="phone_number" rules="required|numeric" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="phone_number" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Email</label>
+            <Field name="email" rules="required|email" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="email" class="p-error" />
+            </Field>
+          </div>
+
+          <!-- Description -->
+          <div class="field col-8">
+            <label>Gender</label>
+            <Field name="gender" rules="required" v-slot="{ field, errors }">
+              <Dropdown
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+                :options="genders"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Select Gender"
+              />
+              <ErrorMessage name="gender" class="p-error" />
+            </Field>
+          </div>
+
+          <div v-if="!id" class="field col-8">
+            <label>Password</label>
+            <Field name="password" rules="required" v-slot="{ field, errors }">
+              <Password
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+                toggleMask
+                :feedback="false"
+                class="w-full"
+              />
+              <ErrorMessage name="password" class="p-error" />
+            </Field>
+          </div>
+
+          <div v-if="!id" class="field col-8">
+            <label>Confirm Password</label>
+            <Field name="confirm_password" rules="required|confirmed:password" v-slot="{ field, errors }">
+              <Password
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+                toggleMask
+                :feedback="false"
+                class="w-full"
+              />
+              <ErrorMessage name="confirm_password" class="p-error" />
+            </Field>
+          </div>
+
+          <!-- Active -->
+          <!-- <div class="field col-12 md:col-6 flex align-items-center">
+            <Checkbox v-model="courseClass.is_active" binary />
+            <label class="ml-2">Active</label>
+          </div> -->
+
         </div>
 
-        <div class="field col-8">
-          <label>Role</label>
-          <Dropdown
-            v-model="user.role"
-            :options="roles"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Select Role"
+        <!-- Actions -->
+        <div class="flex justify-content-end gap-2 mt-4">
+          <Button
+            size="small"
+            label="Cancel"
+            severity="secondary"
+            @click="$router.back()"
+          />
+          <Button
+            :loading="isLoading"
+            type="submit"
+            size="small"
+            label="Save"
+            icon="pi pi-check"
+          />
+          <Button
+            v-if="id"
+            :loading="isLoading"
+            size="small"
+            severity="warning"
+            icon="pi pi-sync"
+            label="Reset Password"
+            @click="resetPassword"
           />
         </div>
-
-        <div class="field col-8">
-          <label>Phone Number</label>
-          <InputText v-model="user.phone_number" />
-        </div>
-
-        <div class="field col-8">
-          <label>Email</label>
-          <InputText v-model="user.email" />
-        </div>
-
-        <!-- Description -->
-        <div class="field col-8">
-          <label>Gender</label>
-          <Dropdown
-            v-model="user.gender"
-            :options="genders"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Select Gender"
-          />
-        </div>
-
-        <div v-if="!user.id" class="field col-8">
-          <label>Password</label>
-          <Password
-            v-model="user.password"
-            toggleMask
-            :feedback="false"
-            class="w-full"
-          />
-        </div>
-
-        <div v-if="!user.id" class="field col-8">
-          <label>Confirm Password</label>
-          <Password
-            v-model="user.confirm_password"
-            toggleMask
-            :feedback="false"
-            class="w-full"
-          />
-          <small v-if="passwordMismatch" class="p-error">
-            Password does not match
-          </small>
-        </div>
-
-        <!-- Active -->
-        <!-- <div class="field col-12 md:col-6 flex align-items-center">
-          <Checkbox v-model="courseClass.is_active" binary />
-          <label class="ml-2">Active</label>
-        </div> -->
-
       </div>
-
-      <!-- Actions -->
-      <div class="flex justify-content-end gap-2 mt-4">
-        <Button
-          size="small"
-          label="Cancel"
-          severity="secondary"
-          @click="$router.back()"
-        />
-        <Button
-          :loading="isLoading"
-          size="small"
-          label="Save"
-          icon="pi pi-check"
-          @click="id ? updateUser(false) : createUser()"
-        />
-        <Button
-          v-if="id"
-          :loading="isLoading"
-          size="small"
-          severity="warning"
-          label="Reset Password"
-          @click="updateUser(true)"
-        />
-      </div>
-    </div>
+    </Form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import InputText from 'primevue/inputtext'
@@ -118,7 +147,7 @@ const router = useRouter()
 const toast = useToast()
 const store = useStore()
 
-const user = ref({
+const initialValues = ref({
   id: null,
   name: null,
   role: null,
@@ -154,19 +183,20 @@ const genders = ref([
   }
 ])
 
-const passwordMismatch = computed(() => {
-  return (
-    user.value.confirm_password &&
-    user.value.password !== user.value.confirm_password
-  )
-})
-
 const getUser = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + id.value)
-    user.value = res.data.data
+    initialValues.value = res.data.data
   } finally {
     isLoading.value = false
+  }
+}
+
+const handleSubmit = (values) => {
+  if (id.value) {
+    updateUser(values)
+  } else {
+    createUser(values)
   }
 }
 
@@ -210,30 +240,45 @@ onMounted(async () => {
   }
 })
 
-const updateUser = async (changePassword) => {
-  console.log('Update:', user.value)
-  if (passwordMismatch.value && changePassword) return
+const resetPassword = async () => {
   try {
     let formData = {}
-    if (changePassword) {
-      formData = {
-        password: user.value.phone_number
-      }
-    } else {
-      formData = {
-        name: user.value.name,
-        role: user.value.role,
-        phone_number: user.value.phone_number,
-        gender: user.value.gender,
-        email: user.value.email,
-      }
+
+    formData = {
+      password: initialValues.value.phone_number
     }
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + user.value.id, formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + id.value, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: changePassword ? 'Password reset to phone number successfully' : 'User updated successfully',
+      detail: 'Password reset to phone number successfully',
+      life: 4000
+    })
+    isLoading.value = false
+    router.push({ name: 'UserList' })
+  } catch (e) {
+    toast.add({
+      severity: 'error',
+      summary: 'Server Error',
+      detail: 'Failed to reset password',
+      life: 4000
+    })
+    isLoading.value = false
+  }
+}
+
+const updateUser = async (values) => {
+  console.log('Update:', values)
+  try {
+    let formData = {}
+    formData = values
+
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + id.value, formData)
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'User updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -249,18 +294,10 @@ const updateUser = async (changePassword) => {
   }
 }
 
-const createUser = async () => {
-  console.log('Create:', user.value)
-  if (passwordMismatch.value) return
+const createUser = async (values) => {
+  console.log('Create:', values)
   try {
-    const formData = {
-      name: user.value.name,
-      role: user.value.role,
-      phone_number: user.value.phone_number,
-      gender: user.value.gender,
-      email: user.value.email,
-      password: user.value.password
-    }
+    const formData = values
 
     await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'user-management', formData)
     toast.add({

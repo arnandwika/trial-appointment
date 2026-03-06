@@ -37,6 +37,21 @@ defineRule("email", value => {
 
   return regex.test(value) || "Invalid email address"
 })
+defineRule("alpha", value => {
+  if (!value) return true
+  return /^[A-Za-z]+$/.test(value) || "Only alphabet allowed"
+})
+defineRule("numeric", value => {
+  if (!value) return true
+  return /^[0-9]+$/.test(value) || "Only numbers allowed"
+})
+defineRule('confirmed', (value, [target], ctx) => {
+  if (value === ctx.form[target]) {
+    return true
+  }
+
+  return 'Password confirmation does not match'
+})
 
 const app = createApp(App)
 

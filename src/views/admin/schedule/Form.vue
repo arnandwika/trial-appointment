@@ -33,7 +33,7 @@
             v-model="schedule.datetime_schedule"
             showTime
             hourFormat="24"
-            dateFormat="dd-mm-yyyy"
+            dateFormat="dd-mm-yy"
             :selectionMode="schedule.id ? 'single' : 'multiple'"
             :minDate="dateNow"
             class="w-full"

@@ -8,11 +8,11 @@
 
       <!-- Desktop Menu -->
       <nav class="nav-links desktop md:col-6 md:flex justify-content-center flex-wrap">
-        <router-link v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
-        <router-link v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
-        <router-link to="/course-classes">Course Classes</router-link>
-        <router-link to="/schedule">Schedule</router-link>
-        <router-link to="/packages">Packages</router-link>
+        <router-link class="font-semibold" v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
+        <router-link class="font-semibold" v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
+        <router-link class="font-semibold" to="/course-classes">Course Classes</router-link>
+        <router-link class="font-semibold" to="/schedule">Schedule</router-link>
+        <router-link class="font-semibold" to="/packages">Packages</router-link>
       </nav>
 
       <!-- Desktop CTA -->
@@ -31,7 +31,7 @@
         class="font-semibold col-offset-2 md:col-offset-0 col-3 md:flex justify-content-end flex-wrap"
         v-if="userLogin"
       >
-        <span class="clickable-text" @click="toggle($event)">{{ userLogin.name }}</span>
+        <span class="clickable-text" @click="toggle($event)">{{ userLogin.name }}<i class="px-1 pi pi-caret-down text-sm"></i></span>
       </p>
 
       <!-- Mobile Hamburger -->
@@ -46,11 +46,11 @@
     <!-- Mobile Menu -->
     <transition name="slide">
       <div v-if="mobileOpen" ref="mobileMenu" class="mobile-menu">
-        <router-link v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
-        <router-link v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
-        <router-link to="/course-classes" @click="closeMenu">Course Classes</router-link>
-        <router-link to="/schedule" @click="closeMenu">Schedule</router-link>
-        <router-link to="/packages" @click="closeMenu">Packages</router-link>
+        <router-link class="font-semibold" v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
+        <router-link class="font-semibold" v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
+        <router-link class="font-semibold" to="/course-classes" @click="closeMenu">Course Classes</router-link>
+        <router-link class="font-semibold" to="/schedule" @click="closeMenu">Schedule</router-link>
+        <router-link class="font-semibold" to="/packages" @click="closeMenu">Packages</router-link>
 
         <Button
           v-if="!userLogin"
@@ -135,6 +135,36 @@
       :popup="true"
     />
   </header>
+  <Dialog
+    v-model:visible="showOwnSchedule"
+    modal
+    dismissableMask
+    header="Class Schedule"
+    :style="{ width: '800px' }"
+    :breakpoints="{
+      '960px': '75vw',
+      '640px': '95vw'
+    }"
+  >
+    <div v-if="ownSchedule.length === 0" class="text-center p-4">
+      No schedules yet
+    </div>
+
+    <div v-else>
+      <DataTable
+        :value="ownSchedule"
+        :loading="isLoading"
+        paginator
+        :rows="5"
+        responsiveLayout="scroll"
+        class="shadow-1"
+      >
+        <Column field="schedule.datetime_schedule" header="Date Time"/>
+        <Column field="schedule.course_class.name" header="Class Name"/>
+        <Column field="schedule.trainer.name" header="Trainer"/>
+      </DataTable>
+    </div>
+  </Dialog>
 </template>
 
 <script setup>
@@ -144,6 +174,7 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
+import dayjs from 'dayjs'
 
 const router = useRouter()
 
@@ -157,9 +188,29 @@ const loading = ref(true)
 const isMobile = ref(false)
 const mobileMenu = ref(null)
 const menu = ref()
+const showOwnSchedule = ref(false)
+const ownSchedule = ref([])
 
 const toggle = (event) => {
   menu.value.toggle(event)
+}
+
+const getOwnSchedule = async () => {
+  loading.value = true
+  try {
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'booking/mine', {
+      params: {
+        user_id: userLogin.value.id
+      },
+    })
+    res.data.data.forEach(element => {
+      element.schedule.datetime_schedule = dayjs(element.schedule.datetime_schedule).format('DD-MM-YYYY HH:MM')
+    })
+    ownSchedule.value = res.data.data
+  } finally {
+    loading.value = false
+    showOwnSchedule.value = true
+  }
 }
 
 const handleClickOutside = (event) => {
@@ -186,6 +237,11 @@ const items = ref([
         label: 'My Order',
         icon: 'pi pi-receipt',
         command: () => router.push('/my-order')
+      },
+      {
+        label: 'My Class Schedule',
+        icon: 'pi pi-book',
+        command: () => getOwnSchedule()
       },
       {
         label: 'Change Password',

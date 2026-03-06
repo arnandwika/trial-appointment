@@ -48,6 +48,12 @@
           <div class="flex justify-content-center gap-2">
             <Button
               :loading="buttonIsLoading"
+              icon="pi pi-info-circle"
+              text
+              @click="getDetailSchedule(slotProps.data.id)"
+            />
+            <Button
+              :loading="buttonIsLoading"
               icon="pi pi-pencil"
               text
               @click="editSchedule(slotProps.data.id)"
@@ -63,6 +69,37 @@
         </template>
       </Column>
     </DataTable>
+    <Dialog
+      v-model:visible="showDetail"
+      modal
+      dismissableMask
+      header="Detail Participants"
+      :style="{ width: '800px' }"
+      :breakpoints="{
+        '960px': '75vw',
+        '640px': '95vw'
+      }"
+    >
+      <div v-if="detailSchedule.length === 0" class="text-center p-4">
+        No participants yet
+      </div>
+
+      <div v-else>
+        <DataTable
+          :value="detailSchedule"
+          :loading="isLoading"
+          paginator
+          :rows="5"
+          responsiveLayout="scroll"
+          class="shadow-1"
+        >
+          <Column field="user_management.name" header="Name"/>
+          <Column field="user_management.phone_number" header="Phone Number"/>
+          <Column field="user_management.email" header="Email"/>
+          <Column field="user_management.gender" header="Gender"/>
+        </DataTable>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -87,6 +124,23 @@ const store = useStore()
 const isLoading = ref(true)
 const buttonIsLoading = ref(false)
 const schedules = ref(null)
+const showDetail = ref(false)
+const detailSchedule = ref([])
+
+const getDetailSchedule = async (id) => {
+  isLoading.value = true
+  try {
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'booking/details', {
+      params: {
+        schedule_id: id
+      },
+    })
+    detailSchedule.value = res.data.data
+  } finally {
+    isLoading.value = false
+    showDetail.value = true
+  }
+}
 
 const fetchSchedules = async () => {
   isLoading.value = true

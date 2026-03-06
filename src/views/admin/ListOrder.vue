@@ -46,16 +46,18 @@
           <div class="text-center w-full">Actions</div>
         </template>
         <template #body="slotProps">
-          <Button
-            :disabled="slotProps.data.status == 'active'"
-            :loading="buttonIsLoading"
-            :label="slotProps.data.status == 'active' ? 'APPROVED' : 'APPROVE'"
-            size="small"
-            aria-expanded="true"
-            :text="slotProps.data.status == 'active'"
-            :class="slotProps.data.status == 'active' ? 'text-color-green w-full' : 'w-full'"
-            @click="approveOrder(slotProps.data.id)"
-          />
+          <div class="flex justify-content-center gap-2">
+            <Button
+              :disabled="slotProps.data.status == 'active'"
+              :loading="buttonIsLoading"
+              :label="slotProps.data.status == 'active' ? 'APPROVED' : 'APPROVE'"
+              size="small"
+              aria-expanded="true"
+              :text="slotProps.data.status == 'active'"
+              :class="slotProps.data.status == 'active' ? 'text-color-green w-full' : 'w-full'"
+              @click="approveOrder(slotProps.data.id)"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>
