@@ -140,8 +140,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
@@ -180,7 +180,7 @@ const updateTrainer = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah trainer',
+      detail: 'Trainer updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -188,8 +188,8 @@ const updateTrainer = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah trainer',
+      summary: 'Server Error',
+      detail: 'Failed to update trainer',
       life: 4000
     })
     isLoading.value = false
@@ -211,7 +211,7 @@ const createTrainer = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat trainer baru',
+      detail: 'Trainer created successfully',
       life: 4000
     })
     isLoading.value = false
@@ -219,8 +219,8 @@ const createTrainer = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan trainer',
+      summary: 'Server Error',
+      detail: 'Failed to create trainer',
       life: 4000
     })
     isLoading.value = false

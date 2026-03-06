@@ -96,7 +96,7 @@ const editTrainer = (id) => {
 }
 
 const deleteTrainer = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan trainer ini?').then (async (result) => {
+  confirm('Delete', 'Are you sure you want deactivate it?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
@@ -106,14 +106,14 @@ const deleteTrainer = async (id) => {
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data trainer',
+          detail: 'Trainer deactivated successfully',
           life: 4000
         })
       } catch (e) {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan trainer',
+          detail: 'Failed to deactivate trainer',
           life: 4000
         })
       }
@@ -139,8 +139,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

@@ -101,15 +101,15 @@ const downloadReport = async () => {
 
     link.remove();
     window.URL.revokeObjectURL(url);
-  } finally {
+  } catch(e) {
     toast.add({
       severity: 'error',
       summary: 'Server Error',
-      detail: 'Terjadi kesalahan saat download report',
+      detail: 'Download report error',
       life: 4000
     })
-    isLoading.value = false
   }
+  isLoading.value = false
 }
 
 const fetchOrders = async () => {
@@ -125,7 +125,7 @@ const fetchOrders = async () => {
 }
 
 const approveOrder = async (id) => {
-  confirm('Approve', 'Apakah anda yakin ingin menyetujui transaksi ini? Pastikan member sudah mengirimkan bukti transfer').then (async (result) => {
+  confirm('Approve', 'Are you sure? Make sure this member already sent you transfer receipt').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
@@ -139,14 +139,14 @@ const approveOrder = async (id) => {
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menyetujui dan mengaktifkan paket member',
+          detail: 'Package approved and activatd successfully',
           life: 4000
         })
       } catch (e) {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menyetujui dan mengaktifkan paket member',
+          detail: 'Failed to approve and activate package',
           life: 4000
         })
       }
@@ -172,8 +172,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

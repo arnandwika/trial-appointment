@@ -33,7 +33,7 @@
             v-model="schedule.datetime_schedule"
             showTime
             hourFormat="24"
-            dateFormat="dd-mm-yy"
+            dateFormat="dd-mm-yyyy"
             :selectionMode="schedule.id ? 'single' : 'multiple'"
             :minDate="dateNow"
             class="w-full"
@@ -144,8 +144,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
@@ -183,7 +183,7 @@ const updateSchedule = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah jadwal',
+      detail: 'Schedule updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -191,8 +191,8 @@ const updateSchedule = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah jadwal',
+      summary: 'Server Error',
+      detail: 'Failed to update schedule',
       life: 4000
     })
     isLoading.value = false
@@ -216,7 +216,7 @@ const createSchedule = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat jadwal baru',
+      detail: 'Schedule created successfully',
       life: 4000
     })
     isLoading.value = false
@@ -224,8 +224,8 @@ const createSchedule = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan jadwal',
+      summary: 'Server Error',
+      detail: 'Failed to create schedule',
       life: 4000
     })
     isLoading.value = false

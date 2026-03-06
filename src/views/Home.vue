@@ -3,26 +3,29 @@
     <Navbar />
 
     <section class="hero relative">
-      <div
-        class="overlay text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
-      >
-        <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
-          Move better. Feel stronger.
-        </h1>
+      <div class="overlay">
+        <div
+          style="opacity: 100%;"
+          class="custom-top text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
+        >
+          <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
+            Move better. Feel stronger.
+          </h1>
 
-        <p class="text-base md:text-xl font-semibold max-w-30rem mb-4 line-height-3">
-          Morgen is a calm, thoughtfully designed space offering Reformer Pilates, Cadillac Pilates, and Yoga.<br><br>
-          A modern Pilates and Yoga studio in Jakarta focused on mindful movement and lasting strength.
-        </p>
+          <p class="text-base md:text-xl font-semibold max-w-30rem mb-4 line-height-3">
+            Morgen is a calm, thoughtfully designed space offering Reformer Pilates, Cadillac Pilates, and Yoga.<br><br>
+            A modern Pilates and Yoga studio in Jakarta focused on mindful movement and lasting strength.
+          </p>
 
-        <Button label="Book a Class" rounded @click="routing('schedule')" />
+          <Button label="Book a Class" rounded @click="routing('schedule')" />
+        </div>
       </div>
     </section>
 
     <!-- ABOUT SECTION -->
     <section class="about py-6">
       <div
-        class="container grid align-items-center gap-2 pl-1 md:pl-4"
+        class="container grid align-items-center gap-2 pl-1 md:pl-4 mx-3 md:mx-0"
       >
         <!-- Image -->
         <div class="col-12 md:col-6">
@@ -61,19 +64,19 @@
       <div class="overlay2">
         <div
           style="opacity: 100%;"
-          class="text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
+          class="text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6 pt-0 md:pt-5"
         >
           <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
             See Our Beneficial Package
           </h1>
 
-          <p class="text-base md:text-xl max-w-30rem mb-4 line-height-3">
-            Start your practice.<br><br>
-            Consistency creates change.<br><br>
+          <p class="mt-0 md:mt-3 text-base md:text-xl font-semibold max-w-30rem mb-4 line-height-3">
+            Start your practice.
+            Consistency creates change.
             Begin your movement journey with us today.
           </p>
 
-          <Button label="View Packages" rounded @click="routing('packages')" />
+          <Button class="mt-0 md:mt-5" label="View Packages" rounded @click="routing('packages')" />
         </div>
       </div>
     </section>
@@ -104,7 +107,7 @@ const routing = (routeTo) => {
 <style lang="scss" scoped>
 
 .hero {
-  height: 90vh;
+  height: 53vh;
   background-image: url('~@/assets/home/hero.jpg');
   background-size: cover;
   background-position: center;
@@ -112,7 +115,7 @@ const routing = (routeTo) => {
 }
 
 .hero2 {
-  height: 65vh;
+  height: 26vh;
   background-image: url('~@/assets/home/hero2.jpg');
   background-size: cover;
   background-position: center;
@@ -120,15 +123,32 @@ const routing = (routeTo) => {
 }
 
 .overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
+}
+
+.custom-top {
+  top: 8%;
   position: absolute;
-  top: 50%;
-  left: 6%;
-  transform: translateY(-50%);
+  left: 3%;
   max-width: 620px;
 }
 
+@media (min-width: 768px) { /* desktop */
+  .custom-top {
+    top: 15%;
+    left: 7%;
+  }
+  .hero {
+    height: 90vh;
+  }
+  .hero2 {
+    height: 65vh;
+  }
+}
+
 .overlay2 {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
 }
 

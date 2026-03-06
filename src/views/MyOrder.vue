@@ -158,8 +158,8 @@ onMounted(async() => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

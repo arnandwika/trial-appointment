@@ -63,7 +63,7 @@
         </div> -->
       </div>
 
-      <div class="flex flex-column gap-3">
+      <div v-if="dateSchedule" class="flex flex-column gap-3">
         <Card
           v-for="item in dateSchedule"
           :key="item.id"
@@ -98,6 +98,22 @@
             </div>
           </template>
         </Card>
+      </div>
+
+      <div v-if="!dateSchedule || dateSchedule.length === 0" class="flex flex-column align-items-center justify-content-center text-center p-6">
+
+        <!-- Icon -->
+        <i class="pi pi-book text-4xl text-300 mb-4"></i>
+
+        <!-- Title -->
+        <div class="text-xl font-semibold mb-2">
+          No classes are available at the moment.
+        </div>
+
+        <!-- Description -->
+        <div class="text-600 mb-4">
+          New sessions will be added soon.
+        </div>
       </div>
 
     </div>
@@ -254,8 +270,8 @@ const validationBook = async (schedule) => {
       if (localStorage.token) {
         toast.add({
           severity: 'error',
-          summary: 'Token Habis',
-          detail: 'Silakan login kembali',
+          summary: 'Token Expired',
+          detail: 'Please log in again',
           life: 4000
         })
       }
@@ -286,7 +302,7 @@ const validationBook = async (schedule) => {
           toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Jadwal yang anda pilih tidak termasuk di paket yang anda punya',
+            detail: 'Class schedule not included in your Packages',
             life: 4000
           })
         }
@@ -295,7 +311,7 @@ const validationBook = async (schedule) => {
         toast.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Anda belum memiliki paket',
+          detail: 'You do not have any Packages yet',
           life: 4000
         })
         canBook = false
@@ -323,7 +339,8 @@ const book = async (schedule, orderDetailId) => {
       )
       toast.add({
         severity: 'success',
-        summary: 'Berhasil Booking Kelas',
+        summary: 'Success',
+        detail: 'Schedule booked',
         life: 4000
       })
       loading.value = false
@@ -331,7 +348,7 @@ const book = async (schedule, orderDetailId) => {
       toast.add({
         severity: 'error',
         summary: 'Server Error',
-        detail: 'Terjadi kesalahan saat menyimpan booking',
+        detail: 'Schedule book error',
         life: 4000
       })
       loading.value = false

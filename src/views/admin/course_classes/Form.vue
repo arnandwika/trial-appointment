@@ -155,8 +155,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
@@ -210,7 +210,7 @@ const updateCourseClass = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah kelas',
+      detail: 'Course class updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -218,8 +218,8 @@ const updateCourseClass = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah kelas',
+      summary: 'Server Error',
+      detail: 'Failed to update course class',
       life: 4000
     })
     isLoading.value = false
@@ -242,7 +242,7 @@ const createCourseClass = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat kelas baru',
+      detail: 'Course class created successfully',
       life: 4000
     })
     isLoading.value = false
@@ -250,8 +250,8 @@ const createCourseClass = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan kelas',
+      summary: 'Server Error',
+      detail: 'Failed to create course class',
       life: 4000
     })
     isLoading.value = false

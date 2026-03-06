@@ -88,8 +88,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
@@ -113,7 +113,7 @@ const updateUser = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah password',
+      detail: 'Password updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -121,8 +121,8 @@ const updateUser = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah password',
+      summary: 'Server Error',
+      detail: 'Failed to change password',
       life: 4000
     })
     isLoading.value = false

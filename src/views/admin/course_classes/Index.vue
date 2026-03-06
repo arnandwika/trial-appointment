@@ -107,7 +107,7 @@ const editCourseClass = (id) => {
 }
 
 const deleteCourseClass = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan kelas ini?').then (async (result) => {
+  confirm('Delete', 'Are you sure you want to deactivate it?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
@@ -117,7 +117,7 @@ const deleteCourseClass = async (id) => {
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data kelas',
+          detail: 'Course class deactivate successfully',
           life: 4000
         })
         await fetchCourseClasses()
@@ -125,7 +125,7 @@ const deleteCourseClass = async (id) => {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan kelas',
+          detail: 'Failed to deactivate course class',
           life: 4000
         })
       }
@@ -152,8 +152,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

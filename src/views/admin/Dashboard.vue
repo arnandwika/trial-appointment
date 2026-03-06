@@ -120,11 +120,11 @@ const fetchDashboard = async () => {
     totalSchedule.value = res.data.data.total_schedule
     activeOrders.value = res.data.data.active_orders
     res.data.data.upcoming_schedules.forEach(element => {
-      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YY HH:MM')
+      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:MM')
     });
     upcomingSchedules.value = res.data.data.upcoming_schedules
     res.data.data.recent_orders.forEach(element => {
-      element.order_date = dayjs(element.order_date).format('DD-MM-YY HH:MM')
+      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:MM')
     })
     recentOrders.value = res.data.data.recent_orders
   } finally {
@@ -149,8 +149,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

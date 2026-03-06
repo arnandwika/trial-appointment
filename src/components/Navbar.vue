@@ -39,14 +39,15 @@
         icon="pi pi-bars"
         :class="userLogin ? 'menu-btn flex justify-content-end flex-wrap mobile md:hidden' : 'mobile menu-btn col-offset-5'"
         text
-        @click="toggleMenu"
+        @click.stop="mobileOpen = !mobileOpen"
       />
     </div>
 
     <!-- Mobile Menu -->
     <transition name="slide">
-      <div v-if="mobileOpen" class="mobile-menu">
-        <router-link to="/" @click="closeMenu">Home</router-link>
+      <div v-if="mobileOpen" ref="mobileMenu" class="mobile-menu">
+        <router-link v-if="userLogin ? userLogin.role == 'admin' ? true : false : false" to="/admin">Admin</router-link>
+        <router-link v-if="userLogin ? userLogin.role == 'member' ? true : false : true" to="/">Home</router-link>
         <router-link to="/course-classes" @click="closeMenu">Course Classes</router-link>
         <router-link to="/schedule" @click="closeMenu">Schedule</router-link>
         <router-link to="/packages" @click="closeMenu">Packages</router-link>
@@ -154,10 +155,21 @@ const mobileOpen = ref(false)
 const userLogin = computed(() => store.getters.user)
 const loading = ref(true)
 const isMobile = ref(false)
+const mobileMenu = ref(null)
 const menu = ref()
 
 const toggle = (event) => {
   menu.value.toggle(event)
+}
+
+const handleClickOutside = (event) => {
+  if (
+    mobileOpen.value &&
+    mobileMenu.value &&
+    !mobileMenu.value.contains(event.target)
+  ) {
+    closeMenu()
+  }
 }
 
 const logout = () => {
@@ -200,6 +212,7 @@ const checkScreen = () => {
 
 onMounted(async() => {
   checkScreen()
+  document.addEventListener("click", handleClickOutside)
   window.addEventListener('resize', checkScreen)
   try {
     const res = await axios.get(
@@ -236,12 +249,13 @@ onMounted(async() => {
 })
 
 onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside)
   window.removeEventListener('resize', checkScreen)
 })
 
-const toggleMenu = () => {
-  mobileOpen.value = !mobileOpen.value
-}
+// const toggleMenu = () => {
+//   mobileOpen.value = !mobileOpen.value
+// }
 
 const closeMenu = () => {
   mobileOpen.value = false

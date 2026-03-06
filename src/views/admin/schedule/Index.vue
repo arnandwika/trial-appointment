@@ -101,7 +101,7 @@ const editSchedule = (id) => {
 }
 
 const deleteSchedule = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan jadwal kelas ini?').then (async (result) => {
+  confirm('Delete', 'Are you sure you want to deactivate it?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
@@ -111,7 +111,7 @@ const deleteSchedule = async (id) => {
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data jadwal kelas',
+          detail: 'Schedule deactivated successfully',
           life: 4000
         })
         await fetchSchedules()
@@ -119,7 +119,7 @@ const deleteSchedule = async (id) => {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan jadwal kelas',
+          detail: 'Failed to deactivate schedule',
           life: 4000
         })
       }
@@ -145,8 +145,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

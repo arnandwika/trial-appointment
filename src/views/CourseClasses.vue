@@ -52,7 +52,7 @@
             <template #header>
               <img
                 :src="apiStorage + item.image_url"
-                alt=""
+                @error="($event.target.src = require('@/assets/course_class/altImage.jpg'))"
                 class="w-full h-11rem object-fit-cover border-round-top"
               />
             </template>
@@ -60,7 +60,7 @@
             <template #content>
               <div class="flex flex-column h-full">
                 <h3 class="text-lg font-semibold text-900 mb-2">
-                  {{ item.name }} ({{ item.class_capacity }} orang)
+                  {{ item.name }} ({{ item.class_capacity }} people)
                 </h3>
 
                 <p class="text-600 text-sm line-height-3 mb-3">

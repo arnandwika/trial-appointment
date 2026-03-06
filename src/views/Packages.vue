@@ -149,7 +149,7 @@ const store = useStore()
 const toast = useToast()
 
 const { openModal } = useLoginModal()
-const { confirm } = useAlert()
+const { success } = useAlert()
 
 const fetchPackages = async () => {
   try {
@@ -191,8 +191,8 @@ const addToCart = async (pkg) => {
       if (localStorage.token) {
         toast.add({
           severity: 'error',
-          summary: 'Token Habis',
-          detail: 'Silakan login kembali',
+          summary: 'Token Expired',
+          detail: 'Please log in again',
           life: 4000
         })
       }
@@ -269,12 +269,12 @@ const checkout = async () => {
     cart.value = []
     showCart.value = false
 
-    confirm('Transaksi Anda Berhasil Dibuat', 'Silakan hubungi Admin setelah transfer untuk proses verifikasi dan aktivasi Paket Anda')
+    success('Your package transaction is completed', 'Please contact +62 852 1234 1263 after payment so admin can verify and activate your package')
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Gagal membuat transaksi paket',
+      summary: 'Server Error',
+      detail: 'Package transaction error',
       life: 4000
     })
     console.log(e)

@@ -133,8 +133,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
@@ -173,7 +173,7 @@ const updatePackage = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil mengubah paket',
+      detail: 'Package updated successfully',
       life: 4000
     })
     isLoading.value = false
@@ -181,8 +181,8 @@ const updatePackage = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat mengubah paket',
+      summary: 'Server Error',
+      detail: 'Failed to update package',
       life: 4000
     })
     isLoading.value = false
@@ -204,7 +204,7 @@ const createPackage = async () => {
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Berhasil membuat paket baru',
+      detail: 'Package created successfully',
       life: 4000
     })
     isLoading.value = false
@@ -212,8 +212,8 @@ const createPackage = async () => {
   } catch (e) {
     toast.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'Terjadi kesalahan saat menyimpan paket',
+      summary: 'Server Error',
+      detail: 'Failed to create package',
       life: 4000
     })
     isLoading.value = false

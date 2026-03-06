@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { Form, Field, ErrorMessage, defineRule } from "vee-validate"
 // import AxiosPlugin from './plugins/axios'
 
 import PrimeVue from 'primevue/config'
@@ -25,10 +26,25 @@ import 'primeflex/primeflex.css'
 
 import './assets/main.scss'
 
+defineRule("required", value => {
+  if (!value) return "This field is required"
+  return true
+})
+defineRule("email", value => {
+  if (!value) return true
+
+  const regex =/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  return regex.test(value) || "Invalid email address"
+})
+
 const app = createApp(App)
 
 app.use(PrimeVue)
 app.use(ToastService)
+app.component('Form', Form);
+app.component('Field', Field);
+app.component('ErrorMessage', ErrorMessage);
 app.component('Button', Button)
 app.component('Card', Card)
 app.component('Skeleton', Skeleton)

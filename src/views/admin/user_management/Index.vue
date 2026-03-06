@@ -96,24 +96,24 @@ const editUser = (id) => {
 }
 
 const deleteUser = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan user ini?').then (async (result) => {
+  confirm('Delete', 'Are you sure you want deactivate it?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
         await axios.delete(
-          process.env.VUE_APP_APPOINTMENT_API + 'user/' + id
+          process.env.VUE_APP_APPOINTMENT_API + 'user-management/' + id
         )
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data user',
+          detail: 'User deactivated successfully',
           life: 4000
         })
       } catch (e) {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan user',
+          detail: 'Failed to deactivate user',
           life: 4000
         })
       }
@@ -139,8 +139,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }

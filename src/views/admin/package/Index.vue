@@ -97,7 +97,7 @@ const editPackage = (id) => {
 }
 
 const deletePackage = async (id) => {
-  confirm('Delete', 'Apakah anda yakin ingin menonaktifkan paket ini?').then (async (result) => {
+  confirm('Delete', 'Are you sure you want to deactivate it?').then (async (result) => {
     if (result.isConfirmed) {
       buttonIsLoading.value = true
       try {
@@ -107,7 +107,7 @@ const deletePackage = async (id) => {
         toast.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Berhasil menonaktifkan data paket',
+          detail: 'Package deactivated successfully',
           life: 4000
         })
         await fetchPackages()
@@ -115,7 +115,7 @@ const deletePackage = async (id) => {
         toast.add({
           severity: 'error',
           summary: 'Server Error',
-          detail: 'Terjadi kesalahan saat menonaktifkan paket',
+          detail: 'Failed to deactivate package',
           life: 4000
         })
       }
@@ -141,8 +141,8 @@ onMounted(async () => {
     if (localStorage.token) {
       toast.add({
         severity: 'error',
-        summary: 'Token Habis',
-        detail: 'Silakan login kembali',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
         life: 4000
       })
     }
