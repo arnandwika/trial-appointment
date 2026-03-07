@@ -3,92 +3,120 @@
     <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} Course Class</h2>
 
     <div class="surface-card p-4 border-round shadow-2">
-      <div class="grid formgrid p-fluid">
+      <Form
+        :initial-values="id ? initialValues : undefined"
+        @submit="handleSubmit"
+        validate-on-input
+        v-slot="{ setFieldValue }"
+      >
+        <div class="grid formgrid p-fluid">
 
-        <!-- Name -->
-        <div class="field col-8">
-          <label>Course Name</label>
-          <InputText v-model="courseClass.name" />
-        </div>
+          <!-- Name -->
+          <div class="field col-8">
+            <label>Course Name</label>
 
-        <!-- Image -->
-        <div class="field col-12">
-          <label>Image</label>
-          <!-- Image Preview -->
-          <div
-            v-if="courseClass.preview_url || courseClass.image_file"
-            class="mb-3 border-round overflow-hidden"
-            style="max-width: 300px"
-          >
-            <img
-              :src="courseClass.image_name ? courseClass.preview_url : apiStorage + courseClass.image_file"
-              class="w-full border-round"
-              style="object-fit: cover; max-height: 200px"
-            />
+            <Field name="name" rules="required" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="name" class="p-error" />
+            </Field>
+
           </div>
 
-          <!-- Upload Area -->
-          <div class="flex align-items-center gap-3 flex-wrap">
-            <FileUpload
-              mode="basic"
-              accept="image/*"
-              :auto="false"
-              chooseLabel="Choose Image"
-              class="p-button-sm"
-              @select="onSelect"
-            />
+          <!-- Image -->
+          <div class="field col-12">
+            <label>Image</label>
 
-            <Button
-              v-if="courseClass.preview_url"
-              icon="pi pi-times"
-              severity="danger"
-              text
-              label="Remove"
-              @click="removeImage"
-            />
+            <!-- Preview -->
+            <div
+              v-if="initialValues.preview_url || initialValues.image_file"
+              class="mb-3 border-round overflow-hidden"
+              style="max-width: 300px"
+            >
+              <img
+                :src="initialValues.image_name
+                  ? initialValues.preview_url
+                  : apiStorage + initialValues.image_file"
+                class="w-full border-round"
+                style="object-fit: cover; max-height: 200px"
+              />
+            </div>
+
+            <Field name="image_file" rules="image" v-slot="{ errorMessage }">
+              <div class="flex align-items-center gap-3 flex-wrap">
+                <FileUpload
+                  mode="basic"
+                  accept="image/*"
+                  :auto="false"
+                  chooseLabel="Choose Image"
+                  class="p-button-sm"
+                  @select="(e) => onSelect(e, setFieldValue)"
+                />
+
+                <Button
+                  v-if="initialValues.preview_url"
+                  icon="pi pi-times"
+                  severity="danger"
+                  label="Remove"
+                  class="col-2 ml-3"
+                  @click="removeImage(setFieldValue)"
+                />
+              </div>
+
+              <small class="text-500">
+                Max size 2MB. JPG, PNG recommended.
+              </small>
+
+              <small v-if="errorMessage" class="p-error block">
+                {{ errorMessage }}
+              </small>
+            </Field>
           </div>
 
-          <small class="text-500">
-            Max size 2MB. JPG, PNG recommended.
-          </small>
+          <!-- Capacity -->
+          <div class="field col-8">
+            <label>Class Capacity</label>
+
+            <Field name="class_capacity" rules="required|numeric" v-slot="{ field, errors }">
+              <InputNumber :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+              />
+              <ErrorMessage name="class_capacity" class="p-error" />
+            </Field>
+
+          </div>
+
+          <!-- Description -->
+          <div class="field col-12">
+            <label>Description</label>
+
+            <Field name="description" rules="required" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="description" class="p-error" />
+            </Field>
+
+          </div>
+
         </div>
 
-        <!-- Duration -->
-        <div class="field col-8">
-          <label>Class Capacity</label>
-          <InputNumber v-model="courseClass.class_capacity" />
+        <!-- Actions -->
+        <div class="flex justify-content-end gap-2 mt-4">
+          <Button
+            size="small"
+            label="Cancel"
+            severity="secondary"
+            @click="$router.back()"
+          />
+
+          <Button
+            :loading="isLoading"
+            size="small"
+            label="Save"
+            icon="pi pi-check"
+            type="submit"
+          />
         </div>
-
-        <!-- Description -->
-        <div class="field col-12">
-          <label>Description</label>
-          <Textarea v-model="courseClass.description" rows="3" />
-        </div>
-
-        <!-- Active -->
-        <!-- <div class="field col-12 md:col-6 flex align-items-center">
-          <Checkbox v-model="courseClass.is_active" binary />
-          <label class="ml-2">Active</label>
-        </div> -->
-
-      </div>
-
-      <!-- Actions -->
-      <div class="flex justify-content-end gap-2 mt-4">
-        <Button
-          size="small"
-          label="Cancel"
-          severity="secondary"
-          @click="$router.back()"
-        />
-        <Button
-          :loading="isLoading"
-          size="small"
-          label="Save"
-          icon="pi pi-check"
-          @click="id ? updateCourseClass() : createCourseClass()"
-        />
-      </div>
+      </Form>
     </div>
   </div>
 </template>
@@ -99,7 +127,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
-import Textarea from 'primevue/textarea'
 // import Dropdown from 'primevue/dropdown'
 import FileUpload from 'primevue/fileupload'
 // import Checkbox from 'primevue/checkbox'
@@ -112,12 +139,13 @@ const router = useRouter()
 const toast = useToast()
 const store = useStore()
 
-const courseClass = ref({
+const initialValues = ref({
   id: null,
   name: null,
   image_file: null,
   image_name: null,
   preview_url: null,
+  previous_image_url: null,
   class_capacity: null,
   description: null,
   is_active: false
@@ -130,8 +158,8 @@ const apiStorage = ref(null)
 const getCourseClass = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + id.value)
-    courseClass.value = res.data.data
-    courseClass.value.image_file = courseClass.value.image_url
+    initialValues.value = res.data.data
+    initialValues.value.image_file = initialValues.value.previous_image_url = initialValues.value.image_url
   } finally {
     isLoading.value = false
   }
@@ -178,82 +206,71 @@ onMounted(async () => {
   }
 })
 
-const onSelect = (event) => {
+const onSelect = (event, setFieldValue) => {
   const file = event.files[0]
-
   if (!file) return
 
-  // Preview
-  courseClass.value.preview_url = URL.createObjectURL(file)
-  courseClass.value.image_file = file
-  courseClass.value.image_name = file.name
+  initialValues.value.preview_url = URL.createObjectURL(file)
+  initialValues.value.image_file = file
+  initialValues.value.image_name = file.name
+
+  setFieldValue('image_file', file)
 }
 
-const removeImage = () => {
-  courseClass.value.preview_url = null
-  courseClass.value.image_file = null
-  courseClass.value.image_name = null
+const removeImage = (setFieldValue) => {
+  initialValues.value.preview_url = null
+  initialValues.value.image_file = null
+  initialValues.value.image_name = null
+
+  setFieldValue('image_file', null)
 }
 
-const updateCourseClass = async () => {
-  console.log('Update:', courseClass.value)
+const handleSubmit = async (values) => {
   try {
+    isLoading.value = true
+
     const formData = new FormData()
 
-    formData.append('name', courseClass.value.name)
-    if (courseClass.value.image_name) formData.append('image_file', courseClass.value.image_file)
-    formData.append('description', courseClass.value.description)
-    formData.append('class_capacity', courseClass.value.class_capacity)
-    formData.append("_method", "PATCH")
+    formData.append('name', values.name)
+    formData.append('description', values.description)
+    formData.append('class_capacity', values.class_capacity)
 
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + courseClass.value.id, formData)
+    if (values.image_file instanceof File) {
+      formData.append('image_file', values.image_file)
+    }
+
+    if (id.value) {
+      formData.append('image_url', initialValues.value.previous_image_url)
+      formData.append('_method', 'PATCH')
+
+      await axios.post(
+        process.env.VUE_APP_APPOINTMENT_API + 'course-class/' + id.value,
+        formData
+      )
+    } else {
+      await axios.post(
+        process.env.VUE_APP_APPOINTMENT_API + 'course-class',
+        formData
+      )
+    }
+
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Course class updated successfully',
+      detail: `Course class ${id.value ? 'updated' : 'created'} successfully`,
       life: 4000
     })
-    isLoading.value = false
+
     router.push({ name: 'CourseList' })
+
   } catch (e) {
     toast.add({
       severity: 'error',
       summary: 'Server Error',
-      detail: 'Failed to update course class',
+      detail: 'Failed to save course class',
       life: 4000
     })
-    isLoading.value = false
-  }
-}
-
-const createCourseClass = async () => {
-  console.log('Create:', courseClass.value)
-  try {
-    const formData = new FormData()
-
-    formData.append('name', courseClass.value.name)
-    formData.append('image_file', courseClass.value.image_file)
-    formData.append('description', courseClass.value.description)
-    formData.append('class_capacity', courseClass.value.class_capacity)
-
-    await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'course-class', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Course class created successfully',
-      life: 4000
-    })
-    isLoading.value = false
-    router.push({ name: 'CourseList' })
-  } catch (e) {
-    toast.add({
-      severity: 'error',
-      summary: 'Server Error',
-      detail: 'Failed to create course class',
-      life: 4000
-    })
+  } finally {
     isLoading.value = false
   }
 }

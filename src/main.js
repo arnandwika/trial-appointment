@@ -52,6 +52,22 @@ defineRule('confirmed', (value, [target], ctx) => {
 
   return 'Password confirmation does not match'
 })
+defineRule('image', (file) => {
+  if (!file) return true
+
+  // skip validation if value is not a File (existing backend image)
+  if (!(file instanceof File)) return true
+
+  if (!file.type.startsWith('image/')) {
+    return 'File must be an image'
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    return 'Image must be smaller than 2MB'
+  }
+
+  return true
+})
 
 const app = createApp(App)
 

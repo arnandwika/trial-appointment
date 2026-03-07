@@ -2,66 +2,87 @@
   <div>
     <h2 class="text-2xl font-semibold mb-4">{{ routingTo }} Trainer</h2>
 
-    <div class="surface-card p-4 border-round shadow-2">
-      <div class="grid formgrid p-fluid">
+    <Form @submit="handleSubmit" validate-on-input :initial-values="id ? initialValues : undefined">
+      <div class="surface-card p-4 border-round shadow-2">
+        <div class="grid formgrid p-fluid">
 
-        <div class="field col-8">
-          <label>Name</label>
-          <InputText v-model="trainer.name" />
+          <div class="field col-8">
+            <label>Name</label>
+            <Field name="name" rules="required|alpha" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="name" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Class Name</label>
+            <Field name="class_id" rules="required" v-slot="{ field, errors }">
+              <Dropdown
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+                :options="courseClasses"
+                optionLabel="name"
+                optionValue="id"
+                placeholder="Select Course Class"
+              />
+              <ErrorMessage name="class_id" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Phone Number</label>
+            <Field name="phone_number" rules="required|numeric" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="phone_number" class="p-error" />
+            </Field>
+          </div>
+
+          <div class="field col-8">
+            <label>Email</label>
+            <Field name="email" rules="required|email" v-slot="{ field, errors }">
+              <InputText v-bind="field" :class="{ 'p-invalid': errors.length }"/>
+              <ErrorMessage name="email" class="p-error" />
+            </Field>
+          </div>
+
+          <!-- Description -->
+          <div class="field col-8">
+            <label>Gender</label>
+            <Field name="gender" rules="required" v-slot="{ field, errors }">
+              <Dropdown
+                :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+                :options="genders"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="Select Gender"
+              />
+              <ErrorMessage name="gender" class="p-error" />
+            </Field>
+          </div>
+
         </div>
 
-        <div class="field col-8">
-          <label>Class Name</label>
-          <Dropdown
-            v-model="trainer.class_id"
-            :options="courseClasses"
-            optionLabel="name"
-            optionValue="id"
-            placeholder="Select Course Class"
+        <!-- Actions -->
+        <div class="flex justify-content-end gap-2 mt-4">
+          <Button
+            size="small"
+            label="Cancel"
+            severity="secondary"
+            @click="$router.back()"
+          />
+          <Button
+            :loading="isLoading"
+            size="small"
+            label="Save"
+            icon="pi pi-check"
+            type="submit"
           />
         </div>
-
-        <div class="field col-8">
-          <label>Phone Number</label>
-          <InputText v-model="trainer.phone_number" />
-        </div>
-
-        <div class="field col-8">
-          <label>Email</label>
-          <InputText v-model="trainer.email" />
-        </div>
-
-        <!-- Description -->
-        <div class="field col-8">
-          <label>Gender</label>
-          <Dropdown
-            v-model="trainer.gender"
-            :options="genders"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="Select Gender"
-          />
-        </div>
-
       </div>
-
-      <!-- Actions -->
-      <div class="flex justify-content-end gap-2 mt-4">
-        <Button
-          size="small"
-          label="Cancel"
-          severity="secondary"
-          @click="$router.back()"
-        />
-        <Button
-          :loading="isLoading"
-          size="small"
-          label="Save"
-          icon="pi pi-check"
-          @click="id ? updateTrainer() : createTrainer()"
-        />
-      </div>
-    </div>
+    </Form>
   </div>
 </template>
 
@@ -81,7 +102,7 @@ const router = useRouter()
 const toast = useToast()
 const store = useStore()
 
-const trainer = ref({
+const initialValues = ref({
   id: null,
   name: null,
   class_id: null,
@@ -114,10 +135,20 @@ const fetchCourseClasses = async () => {
   }
 }
 
+const handleSubmit = (values) => {
+  if (id.value) {
+    updateTrainer(values)
+  } else {
+    createTrainer(values)
+  }
+}
+
 const getTrainer = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + id.value)
-    trainer.value = res.data.data
+    res.data.data.class_id = parseInt(res.data.data.class_id)
+    initialValues.value = res.data.data
+    console.log(initialValues.value)
   } finally {
     isLoading.value = false
   }
@@ -165,18 +196,12 @@ onMounted(async () => {
   }
 })
 
-const updateTrainer = async () => {
-  console.log('Update:', trainer.value)
+const updateTrainer = async (values) => {
+  console.log('Update:', values)
   try {
-    const formData = {
-      name: trainer.value.name,
-      class_id: trainer.value.class_id,
-      phone_number: trainer.value.phone_number,
-      gender: trainer.value.gender,
-      email: trainer.value.email,
-    }
+    const formData = values
 
-    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + trainer.value.id, formData)
+    await axios.patch(process.env.VUE_APP_APPOINTMENT_API + 'trainer/' + id.value, formData)
     toast.add({
       severity: 'success',
       summary: 'Success',
@@ -196,16 +221,10 @@ const updateTrainer = async () => {
   }
 }
 
-const createTrainer = async () => {
-  console.log('Create:', trainer.value)
+const createTrainer = async (values) => {
+  console.log('Create:', values)
   try {
-    const formData = {
-      name: trainer.value.name,
-      class_id: trainer.value.class_id,
-      phone_number: trainer.value.phone_number,
-      gender: trainer.value.gender,
-      email: trainer.value.email,
-    }
+    const formData = values
 
     await axios.post(process.env.VUE_APP_APPOINTMENT_API + 'trainer', formData)
     toast.add({

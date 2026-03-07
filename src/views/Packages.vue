@@ -38,9 +38,9 @@
           <div
             v-for="item in packages"
             :key="item.id"
-            class="col-12 sm:col-6 md:col-4"
+            class="col-12 sm:col-6 md:col-4 flex"
           >
-            <Card class="h-full">
+            <Card class="w-full package-card h-full">
               <template #title>
                 {{ item.title }}
               </template>
@@ -50,11 +50,13 @@
               </template>
 
               <template #content>
-                <ul class="text-sm pl-3 line-height-3">
-                  <li>One time payment</li>
-                  <li>{{ item.quota }} credit(s) for Appointments</li>
-                  <li>{{ item.description }}</li>
-                </ul>
+                <div class="flex flex-column h-full">
+                  <ul class="text-sm pl-3 line-height-3">
+                    <li>One time payment</li>
+                    <li>{{ item.quota }} credit(s) for Appointments</li>
+                    <li>{{ item.description }}</li>
+                  </ul>
+                </div>
               </template>
 
               <template #footer>
@@ -327,5 +329,19 @@ onMounted(fetchPackages)
   position: absolute;
   top: -4px;
   right: -4px;
+}
+
+.package-card {
+  height: 100%;
+}
+
+.package-card :deep(.p-card-body) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.package-card :deep(.p-card-content) {
+  flex: 1;
 }
 </style>

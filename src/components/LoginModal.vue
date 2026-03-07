@@ -75,7 +75,7 @@
           </div>
 
           <div class="text-center text-sm">
-            <p v-if="errorMessage" class="text-red-500 mt-2">
+            <p v-if="errorMessage" class="p-error mt-2">
               {{ errorMessage }}
             </p>
           </div>

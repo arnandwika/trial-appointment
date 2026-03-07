@@ -37,7 +37,7 @@
       <!-- Mobile Hamburger -->
       <Button
         icon="pi pi-bars"
-        :class="userLogin ? 'menu-btn flex justify-content-end flex-wrap mobile md:hidden' : 'mobile menu-btn col-offset-5'"
+        :class="userLogin ? 'menu-btn mobile md:hidden' : 'mobile menu-btn col-offset-5'"
         text
         @click.stop="mobileOpen = !mobileOpen"
       />
@@ -134,37 +134,37 @@
       :model="items"
       :popup="true"
     />
-  </header>
-  <Dialog
-    v-model:visible="showOwnSchedule"
-    modal
-    dismissableMask
-    header="Class Schedule"
-    :style="{ width: '800px' }"
-    :breakpoints="{
-      '960px': '75vw',
-      '640px': '95vw'
-    }"
-  >
-    <div v-if="ownSchedule.length === 0" class="text-center p-4">
-      No schedules yet
-    </div>
+    <Dialog
+      v-model:visible="showOwnSchedule"
+      modal
+      dismissableMask
+      header="Class Schedule"
+      :style="{ width: '800px' }"
+      :breakpoints="{
+        '960px': '75vw',
+        '640px': '95vw'
+      }"
+    >
+      <div v-if="ownSchedule.length === 0" class="text-center p-4">
+        No schedules yet
+      </div>
 
-    <div v-else>
-      <DataTable
-        :value="ownSchedule"
-        :loading="isLoading"
-        paginator
-        :rows="5"
-        responsiveLayout="scroll"
-        class="shadow-1"
-      >
-        <Column field="schedule.datetime_schedule" header="Date Time"/>
-        <Column field="schedule.course_class.name" header="Class Name"/>
-        <Column field="schedule.trainer.name" header="Trainer"/>
-      </DataTable>
-    </div>
-  </Dialog>
+      <div v-else>
+        <DataTable
+          :value="ownSchedule"
+          :loading="loading"
+          paginator
+          :rows="5"
+          responsiveLayout="scroll"
+          class="shadow-1"
+        >
+          <Column field="schedule.datetime_schedule" header="Date Time"/>
+          <Column field="schedule.course_class.name" header="Class Name"/>
+          <Column field="schedule.trainer.name" header="Trainer"/>
+        </DataTable>
+      </div>
+    </Dialog>
+  </header>
 </template>
 
 <script setup>
@@ -172,6 +172,8 @@ import { useLoginModal } from '@/composables/useLoginModal'
 import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'

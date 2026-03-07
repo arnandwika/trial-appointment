@@ -46,9 +46,9 @@
         <div
           v-for="item in courseClasses"
           :key="item.id"
-          class="col-12 sm:col-6 lg:col-3"
+          class="col-12 sm:col-6 lg:col-3 flex"
         >
-          <Card class="h-full">
+          <Card class="w-full class-card h-full">
             <template #header>
               <img
                 :src="apiStorage + item.image_url"
@@ -66,7 +66,12 @@
                 <p class="text-600 text-sm line-height-3 mb-3">
                   {{ item.description }}
                 </p>
-                <Button class="mt-auto" label="Book a Class" rounded @click="routing('packages')" />
+                <Button
+                  class="mt-auto"
+                  label="Book a Class"
+                  rounded
+                  @click="routing('packages')"
+                />
               </div>
             </template>
           </Card>
@@ -128,5 +133,19 @@ onMounted(async () => {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.class-card {
+  height: 100%;
+}
+
+.class-card :deep(.p-card-body) {
+  display: flex;
+  flex-direction: column;
+  height: 65%;
+}
+
+.class-card :deep(.p-card-content) {
+  flex: 1;
 }
 </style>
