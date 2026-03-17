@@ -147,7 +147,7 @@ const fetchSchedules = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule')
     res.data.data.forEach(element => {
-      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:MM')
+      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:mm')
     })
     schedules.value = res.data.data
   } finally {

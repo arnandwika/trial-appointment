@@ -137,6 +137,7 @@ const loading = ref(true)
 const schedule = ref([])
 const dateSchedule = ref([])
 const selectedDate = ref(null)
+const ownSchedule = ref([])
 
 const { openModal } = useLoginModal()
 const store = useStore()
@@ -148,13 +149,14 @@ const generateDates = () => {
 
   const temp = []
   let current = start
+
   selectedDate.value = current.format('dddd, DD MMMM')
 
   dateSchedule.value = schedule.value.filter(item => item.datetime_schedule == selectedDate.value.iso)
 
   while (current.isBefore(end) || current.isSame(end, 'day')) {
     temp.push({
-      iso: current.format('YYYY-MM-DD HH:MM:ss'),
+      iso: current.format('YYYY-MM-DD HH:mm:ss'),
       dayLabel: current.format('ddd'),
       dayNumber: current.format('DD'),
       dayMonth: current.format('ddd, DD MMMM'),
@@ -237,6 +239,23 @@ const setActiveDate = (selected) => {
 //   },
 // ])
 
+const getOwnSchedule = async () => {
+  loading.value = true
+  try {
+    const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'booking/mine', {
+      params: {
+        user_id: store.getters.user.id
+      },
+    })
+    res.data.data.forEach(element => {
+      element.schedule.datetime_schedule = dayjs(element.schedule.datetime_schedule).format('DD-MM-YYYY HH:mm')
+    })
+    ownSchedule.value = res.data.data
+  } finally {
+    loading.value = false
+  }
+}
+
 const fetchSchedule = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'schedule')
@@ -251,9 +270,30 @@ const validationBook = async (schedule) => {
     openModal()
   } else {
     let canBook = false
+    let alreadyBook = false
     let errorMessage = ''
     let orderDetailId = null
     loading.value = true
+
+    if (ownSchedule.value && store.getters.user.role != 'admin') {
+      ownSchedule.value.forEach(element => {
+        if (element.schedule.id == schedule.id && alreadyBook == false) {
+          toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'You already book this class',
+            life: 4000
+          })
+          alreadyBook = true
+        }
+      })
+    }
+
+    if (alreadyBook) {
+      loading.value = false
+      return
+    }
+
     try {
       const res = await axios.get(
         process.env.VUE_APP_APPOINTMENT_API + 'user',
@@ -292,12 +332,15 @@ const validationBook = async (schedule) => {
 
         store.getters.userTransaction.forEach(element1 => {
           element1.order_details.forEach(element2 => {
-            if (element2.class_id == schedule.course_class.id) {
-              if (element1.active) {
+            if (element2.class_id == schedule.course_class.id && !canBook) {
+              let expired = dayjs(element2.valid_until).format('YYYY-MM-DD')
+              if (element1.status == 'active' && dayjs(expired).isAfter(dayjs().format('YYYY-MM-DD')) || dayjs(expired).isSame(dayjs().format('YYYY-MM-DD'))) {
                 canBook = true
                 orderDetailId = element2.id
-              } else {
+              } else if (element1.status == 'inactive') {
                 errorMessage = 'Your packages transaction not yet activated by Admin'
+              } else if (element1.status == 'active' && dayjs(expired).isBefore(dayjs().format('YYYY-MM-DD'))) {
+                errorMessage = 'Your packages is expired'
               }
             }
           })
@@ -350,6 +393,7 @@ const book = async (schedule, orderDetailId) => {
         life: 4000
       })
       await fetchSchedule()
+      getOwnSchedule()
     } catch (e) {
       toast.add({
         severity: 'error',
@@ -362,8 +406,32 @@ const book = async (schedule, orderDetailId) => {
   }
 }
 
-onMounted(() => {
-  fetchSchedule()
+onMounted(async () => {
+  try {
+    const res = await axios.get(
+      process.env.VUE_APP_APPOINTMENT_API + 'user',
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.token
+        }
+      },
+    )
+
+    store.dispatch('login', res.data)
+  } catch (error) {
+    if (localStorage.token) {
+      toast.add({
+        severity: 'error',
+        summary: 'Token Expired',
+        detail: 'Please log in again',
+        life: 4000
+      })
+    }
+    localStorage.removeItem('token')
+    store.dispatch('logout')
+  }
+  await fetchSchedule()
+  if (store.getters.user) await getOwnSchedule()
   generateDates()
 })
 </script>

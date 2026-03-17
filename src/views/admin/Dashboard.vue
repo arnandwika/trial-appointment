@@ -120,11 +120,11 @@ const fetchDashboard = async () => {
     totalSchedule.value = res.data.data.total_schedule
     activeOrders.value = res.data.data.active_orders
     res.data.data.upcoming_schedules.forEach(element => {
-      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:MM')
+      element.datetime_schedule = dayjs(element.datetime_schedule).format('DD-MM-YYYY HH:mm')
     });
     upcomingSchedules.value = res.data.data.upcoming_schedules
     res.data.data.recent_orders.forEach(element => {
-      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:MM')
+      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:mm')
       element.total_amount = 'Rp' + element.total_amount
     })
     recentOrders.value = res.data.data.recent_orders

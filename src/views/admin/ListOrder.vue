@@ -123,7 +123,7 @@ const fetchOrders = async () => {
   try {
     const res = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders')
     res.data.data.forEach(element => {
-      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:MM')
+      element.order_date = dayjs(element.order_date).format('DD-MM-YYYY HH:mm')
     })
     orders.value = res.data.data
   } finally {
@@ -149,6 +149,7 @@ const approveOrder = async (id) => {
           detail: 'Package approved and activatd successfully',
           life: 4000
         })
+        await fetchOrders()
       } catch (e) {
         toast.add({
           severity: 'error',

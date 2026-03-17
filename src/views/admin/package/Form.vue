@@ -52,6 +52,17 @@
             </Field>
           </div>
 
+          <div class="field col-8">
+            <label>Valid Days</label>
+            <Field name="valid_days" rules="required|numeric" v-slot="{ field, errors }">
+              <InputNumber :modelValue="field.value"
+                @update:modelValue="field.onChange"
+                :class="{ 'p-invalid': errors.length }"
+              />
+              <ErrorMessage name="valid_days" class="p-error" />
+            </Field>
+          </div>
+
           <!-- Description -->
           <div class="field col-12">
             <label>Description</label>

@@ -28,8 +28,9 @@
       <Column field="title" header="Title" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="course_class.name" header="Class Name" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="price" header="Price" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="quota" header="Quota" :headerStyle="{ justifyContent: 'center' }" />
+      <Column field="valid_days" header="Valid Days" :headerStyle="{ justifyContent: 'center' }" />
       <Column field="description" header="Description" :headerStyle="{ justifyContent: 'center' }" />
-      <Column field="quota" header="quota" :headerStyle="{ justifyContent: 'center' }" />
 
       <Column header="Status" :headerStyle="{ justifyContent: 'center' }">
         <template #body="slotProps">

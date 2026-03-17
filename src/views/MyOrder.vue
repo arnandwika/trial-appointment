@@ -112,6 +112,9 @@
                   style="height: 8px"
                 />
               </div>
+              <div v-if="order.status == 'active'" class="text-600 font-bold mt-5">
+                <span class="p-error">*</span>Valid until: {{ detail.show_valid_until }} <span v-if="checkExpired(detail.valid_until)" class="p-error">EXPIRED</span>
+              </div>
             </div>
           </template>
         </Card>
@@ -124,21 +127,26 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useToast } from 'primevue/usetoast'
 import ProgressBar from 'primevue/progressbar'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 const store = useStore()
 const router = useRouter()
-const orders = computed(() => store.getters.userTransaction)
+const orders = ref(null)
 const toast = useToast()
 const loading = ref(false)
 
 const getPercentage = (detail) => {
   return Math.round((detail.used_quota / detail.total_quota) * 100)
+}
+
+const checkExpired = (valid) => {
+  return dayjs(valid).isBefore(dayjs().format('YYYY-MM-DD'))
 }
 
 onMounted(async() => {
@@ -171,7 +179,14 @@ onMounted(async() => {
 
   try {
     const res2 = await axios.get(process.env.VUE_APP_APPOINTMENT_API + 'orders/my-transaction/' + store.getters.user.id)
+    res2.data.data.forEach(element1 => {
+      element1.order_details.forEach(element2 => {
+        element2.show_valid_until = dayjs(element2.valid_until).format('DD-MM-YYYY')
+        element2.valid_until = dayjs(element2.valid_until).format('YYYY-MM-DD')
+      })
+    })
     store.dispatch('storeUserTransaction', res2.data.data)
+    orders.value = res2.data.data
   } catch (error) {
     console.log(error)
   }

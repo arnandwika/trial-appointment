@@ -206,7 +206,7 @@ const getOwnSchedule = async () => {
       },
     })
     res.data.data.forEach(element => {
-      element.schedule.datetime_schedule = dayjs(element.schedule.datetime_schedule).format('DD-MM-YYYY HH:MM')
+      element.schedule.datetime_schedule = dayjs(element.schedule.datetime_schedule).format('DD-MM-YYYY HH:mm')
     })
     ownSchedule.value = res.data.data
   } finally {
@@ -236,7 +236,7 @@ const items = ref([
     label: 'Account',
     items: [
       {
-        label: 'My Order',
+        label: 'My Package',
         icon: 'pi pi-receipt',
         command: () => router.push('/my-order')
       },

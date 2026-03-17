@@ -114,6 +114,7 @@ const deleteUser = async (id) => {
           detail: 'User deactivated successfully',
           life: 4000
         })
+        await fetchUsers()
       } catch (e) {
         toast.add({
           severity: 'error',

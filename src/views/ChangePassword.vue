@@ -11,6 +11,7 @@
             toggleMask
             :feedback="false"
             class="w-full"
+            inputClass="w-full"
           />
         </div>
 
@@ -21,6 +22,7 @@
             toggleMask
             :feedback="false"
             class="w-full"
+            inputClass="w-full"
           />
           <small v-if="passwordMismatch" class="p-error">
             Password does not match

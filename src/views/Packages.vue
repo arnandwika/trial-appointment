@@ -54,6 +54,7 @@
                   <ul class="text-sm pl-3 line-height-3">
                     <li>One time payment</li>
                     <li>{{ item.quota }} credit(s) for Appointments</li>
+                    <li>Valid for {{ item.valid_days }} days</li>
                     <li>{{ item.description }}</li>
                   </ul>
                 </div>
