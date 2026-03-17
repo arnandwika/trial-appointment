@@ -16,7 +16,7 @@
 
         <div class="text-sm">
           <strong>Bank Account :</strong><br>
-          BCA a/c : 1122334455<br>
+          BCA 5510317396 Ayu Hariyani<br>
         </div>
       </div>
 
