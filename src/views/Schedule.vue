@@ -152,7 +152,7 @@ const generateDates = () => {
 
   selectedDate.value = current.format('dddd, DD MMMM')
 
-  dateSchedule.value = schedule.value.filter(item => item.datetime_schedule == selectedDate.value.iso)
+  dateSchedule.value = schedule.value.filter(item => dayjs(item.datetime_schedule).isSame(dayjs(selectedDate.value.iso), 'day'))
 
   while (current.isBefore(end) || current.isSame(end, 'day')) {
     temp.push({

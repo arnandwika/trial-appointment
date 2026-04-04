@@ -161,6 +161,22 @@
           <Column field="schedule.datetime_schedule" header="Date Time"/>
           <Column field="schedule.course_class.name" header="Class Name"/>
           <Column field="schedule.trainer.name" header="Trainer"/>
+          <Column bodyStyle="width: 130px">
+            <template #header>
+              <div class="text-center w-full">Actions</div>
+            </template>
+            <template #body="slotProps">
+              <div class="flex justify-content-center gap-2">
+                <Button
+                  :loading="buttonIsLoading"
+                  :disabled="!slotProps.data.is_active"
+                  label="CANCEL"
+                  severity="warning"
+                  @click="cancelBook(slotProps.data.id)"
+                />
+              </div>
+            </template>
+          </Column>
         </DataTable>
       </div>
     </Dialog>
@@ -176,9 +192,11 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useToast } from 'primevue/usetoast'
 import { useRouter } from 'vue-router'
+import { useAlert } from '@/composables/useAlert'
 import dayjs from 'dayjs'
 
 const router = useRouter()
+const { confirm } = useAlert()
 
 const toast = useToast()
 const store = useStore()
@@ -191,10 +209,40 @@ const isMobile = ref(false)
 const mobileMenu = ref(null)
 const menu = ref()
 const showOwnSchedule = ref(false)
+const buttonIsLoading = ref(false)
 const ownSchedule = ref([])
 
 const toggle = (event) => {
   menu.value.toggle(event)
+}
+
+const cancelBook = async (id) => {
+  showOwnSchedule.value = false
+  confirm('Delete', 'Are you sure you want to cancel this class booking?').then (async (result) => {
+    if (result.isConfirmed) {
+      buttonIsLoading.value = true
+      try {
+        await axios.delete(
+          process.env.VUE_APP_APPOINTMENT_API + 'booking/' + id
+        )
+        toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Class booking canceled successfully',
+          life: 4000
+        })
+        await getOwnSchedule()
+      } catch (e) {
+        toast.add({
+          severity: 'error',
+          summary: 'Server Error',
+          detail: 'Failed to cancel class booking',
+          life: 4000
+        })
+      }
+      buttonIsLoading.value = false
+    }
+  })
 }
 
 const getOwnSchedule = async () => {

@@ -2,13 +2,40 @@
   <div class="home min-h-screen flex flex-column">
     <Navbar />
 
-    <section class="hero relative">
+    <!-- HERO DESKTOP -->
+    <section v-if="!isMobile" class="about-hero py-0">
+      <div class="overlay">
+        <div
+          style="opacity: 100%"
+          class="container text-white grid align-items-center gap-2 pl-1 md:pl-4 mx-3 md:mx-0"
+        >
+          <!-- Text -->
+          <div class="text-right col-12 md:col-5">
+            <div>
+              <h2 class="text-5xl mb-3">
+                Move better. Feel stronger.
+              </h2>
+              <h4 class="text-xl line-height-2">
+                Morgen is a calm, thoughtfully designed space offering Reformer Pilates, Cadillac Pilates, and Yoga.<br><br>
+                A modern Pilates and Yoga studio in Jakarta focused on mindful movement and lasting strength.
+              </h4>
+              <Button class="mt-1 md:mt-3" label="Book a Class" rounded @click="routing('schedule')" />
+            </div>
+          </div>
+          <!-- Image -->
+          <div class="hero-desktop col-12 md:col-6 border-round-2xl mb-3 mt-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERO MOBILE -->
+    <section v-if="isMobile" class="hero relative">
       <div class="overlay">
         <div
           style="opacity: 100%;"
           class="custom-top text-white flex flex-column align-items-center justify-content-center text-center px-3 md:px-6"
         >
-          <h1 class="text-3xl md:text-5xl font-bold mb-3 line-height-3">
+          <h1 class="text-xl md:text-5xl font-bold mb-2 md:mb-3 line-height-2 md:line-height-3">
             Move better. Feel stronger.
           </h1>
 
@@ -17,7 +44,7 @@
             A modern Pilates and Yoga studio in Jakarta focused on mindful movement and lasting strength.
           </p>
 
-          <Button label="Book a Class" rounded @click="routing('schedule')" />
+          <Button class="mt-1 md:mt-4" label="Book a Class" rounded @click="routing('schedule')" />
         </div>
       </div>
     </section>
@@ -30,7 +57,7 @@
         <!-- Image -->
         <div class="col-12 md:col-6">
           <img
-            src="@/assets/home/about.jpg"
+            src="@/assets/home/aboutWA.jpeg"
             alt="About Morgen Pilates & Yoga Studio"
             class="w-full border-round-lg shadow-2"
           />
@@ -87,9 +114,11 @@
 <script setup>
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const isMobile = ref(false)
 
 // const bookClass = () => {
 //   if (!store.getters.user) {
@@ -102,13 +131,27 @@ const router = useRouter()
 const routing = (routeTo) => {
   router.push(routeTo)
 }
+const checkScreen = () => {
+  isMobile.value = window.innerWidth < 768
+}
+onMounted(async() => {
+  checkScreen()
+})
 </script>
 
 <style lang="scss" scoped>
 
 .hero {
-  height: 53vh;
-  background-image: url('~@/assets/home/hero.jpg');
+  height: 43vh;
+  background-image: url('~@/assets/home/heroWA.jpeg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.hero-desktop {
+  height: 95vh;
+  background-image: url('~@/assets/home/heroWA.jpeg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -116,14 +159,14 @@ const routing = (routeTo) => {
 
 .hero2 {
   height: 26vh;
-  background-image: url('~@/assets/home/hero2.jpg');
+  background-image: url('~@/assets/home/hero2WA.jpeg');
   background-size: cover;
   background-position: center;
   position: relative;
 }
 
 .overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.65);
   height: 100%;
 }
 
@@ -141,6 +184,7 @@ const routing = (routeTo) => {
   }
   .hero {
     height: 90vh;
+    background-position: center;
   }
   .hero2 {
     height: 65vh;
@@ -163,6 +207,25 @@ const routing = (routeTo) => {
 .about {
   padding: 6rem 0;
   background-color: #f7efe4;
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  img {
+    width: 100%;
+    border-radius: 24px;
+  }
+}
+
+.about-hero {
+  padding: 6rem 0;
+  background-image: url('~@/assets/home/about-heroWA.jpeg');
+  background-size: contain;
+  background-position: center;
 
   .about-grid {
     display: grid;
