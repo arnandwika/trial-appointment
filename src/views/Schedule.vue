@@ -393,7 +393,8 @@ const book = async (schedule, orderDetailId) => {
         life: 4000
       })
       await fetchSchedule()
-      getOwnSchedule()
+      if (store.getters.user) await getOwnSchedule()
+      generateDates()
     } catch (e) {
       toast.add({
         severity: 'error',
